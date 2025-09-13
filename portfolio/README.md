@@ -1,16 +1,34 @@
-# portfolio
 
-A new Flutter project.
+# Portfolio
+
+A personal portfolio web and mobile app built with Flutter. This project showcases your skills, projects, and contact information in a modern, responsive design. It features:
+
+- A header section with profile image and blur effect
+- Theme toggle (dark/light mode)
+- About Me, Skills, Projects, and Contact sections
+- Responsive layout for web and mobile
+- Customizable colors and content
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. **Clone the repository:**
+	```sh
+	git clone <your-repo-url>
+	```
+2. **Install dependencies:**
+	```sh
+	flutter pub get
+	```
+3. **Run the app:**
+	```sh
+	flutter run -d chrome   # For web
+	flutter run              # For mobile
+	```
 
-A few resources to get you started if this is your first Flutter project:
+## Customization
+- Update your profile image, name, and details in `lib/main.dart`.
+- Add or modify skills and projects in the respective sections.
+- Adjust colors and styles as needed for your personal branding.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## License
+This project is open source and available under the MIT License.
