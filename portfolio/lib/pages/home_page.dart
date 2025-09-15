@@ -392,11 +392,15 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
     final isMobile = screenWidth < 600;
-    final crossAxisCount = screenWidth >= 1200
-        ? 3
-        : screenWidth >= 800
-        ? 2
-        : 1;
+    // Laptop: 900px-1400px, Desktop: >1400px, Tablet: 600-900px, Mobile: <600px
+    int crossAxisCount;
+    if (screenWidth >= 1400) {
+      crossAxisCount = 3;
+    } else if (screenWidth >= 900) {
+      crossAxisCount = 2;
+    } else {
+      crossAxisCount = 1;
+    }
     final childAspectRatio = isMobile ? 2.2 : 3.5;
     return Padding(
       key: key,
