@@ -306,7 +306,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Projects',
+            'My Projects',
             style: GoogleFonts.readexPro(
               textStyle: TextStyle(
                 fontSize: 36,
