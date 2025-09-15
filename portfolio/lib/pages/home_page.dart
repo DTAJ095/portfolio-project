@@ -292,7 +292,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             'This very website, showcasing skills and projects. Built with Flutter!',
         ''
                 'link':
-            'https://github.com/DTAJ095/portfolio',
+            'https://github.com/DTAJ095/portfolio-project',
       },
     ];
 
