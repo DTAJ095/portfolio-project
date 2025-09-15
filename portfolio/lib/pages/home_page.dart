@@ -42,60 +42,71 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   Widget build(BuildContext context) {
     final bgColor = _isDarkMode ? Colors.black : Colors.white;
     final appBarTextColor = _isDarkMode ? Colors.white : Colors.black;
-    return Scaffold(
-      backgroundColor: bgColor,
-      appBar: AppBar(
-        backgroundColor: bgColor,
-        elevation: 0,
-        title: Text(
-          'Alban Jaures',
-          style: GoogleFonts.readexPro(
-            textStyle: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: appBarTextColor,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = constraints.maxWidth;
+        return Scaffold(
+          backgroundColor: bgColor,
+          appBar: AppBar(
+            backgroundColor: bgColor,
+            elevation: 0,
+            title: Text(
+              'Alban Jaures',
+              style: GoogleFonts.readexPro(
+                textStyle: TextStyle(
+                  fontSize: screenWidth < 600 ? 22 : 30,
+                  fontWeight: FontWeight.bold,
+                  color: appBarTextColor,
+                ),
+              ),
+            ),
+            actions: [
+              _navButton('About', _aboutKey, screenWidth),
+              _navButton('Skills', _skillsKey, screenWidth),
+              _navButton('Projects', _projectsKey, screenWidth),
+              _navButton('Contact', _contactKey, screenWidth),
+              IconButton(
+                icon: Icon(
+                  _isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
+                  color: appBarTextColor,
+                ),
+                tooltip: 'Toggle Theme',
+                onPressed: _toggleTheme,
+              ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                _buildHeaderSection(screenWidth),
+                _buildAboutMeSection(key: _aboutKey, screenWidth: screenWidth),
+                _buildSkillsSection(key: _skillsKey, screenWidth: screenWidth),
+                _buildProjectsSection(
+                  key: _projectsKey,
+                  screenWidth: screenWidth,
+                ),
+                _buildContactSection(
+                  key: _contactKey,
+                  screenWidth: screenWidth,
+                ),
+                _buildFooter(screenWidth),
+              ],
             ),
           ),
-        ),
-        actions: [
-          _navButton('About', _aboutKey),
-          _navButton('Skills', _skillsKey),
-          _navButton('Projects', _projectsKey),
-          _navButton('Contact', _contactKey),
-          IconButton(
-            icon: Icon(
-              _isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
-              color: appBarTextColor,
-            ),
-            tooltip: 'Toggle Theme',
-            onPressed: _toggleTheme,
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            _buildHeaderSection(),
-            _buildAboutMeSection(key: _aboutKey),
-            _buildSkillsSection(key: _skillsKey),
-            _buildProjectsSection(key: _projectsKey),
-            _buildContactSection(key: _contactKey),
-            _buildFooter(),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _navButton(String title, GlobalKey key) {
+  Widget _navButton(String title, GlobalKey key, double screenWidth) {
     return TextButton(
       onPressed: () => _scrollTo(key),
       child: Text(
         title,
         style: GoogleFonts.readexPro(
           textStyle: TextStyle(
-            fontSize: 15,
+            fontSize: screenWidth < 600 ? 13 : 15,
             color: Colors.deepPurpleAccent,
             fontWeight: FontWeight.bold,
           ),
@@ -104,7 +115,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     );
   }
 
-  Widget _buildHeaderSection() {
+  Widget _buildHeaderSection(double screenWidth) {
     final headerBgColor = _isDarkMode
         ? const Color.fromARGB(255, 23, 2, 27).withValues()
         : Colors.white.withValues();
@@ -112,75 +123,133 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         ? Colors.deepPurple
         : Colors.deepPurpleAccent;
     final subtitleTextColor = _isDarkMode ? Colors.white70 : Colors.black87;
+    final isMobile = screenWidth < 600;
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 80.0, horizontal: 40.0),
-          decoration: BoxDecoration(color: headerBgColor),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: NetworkImage(
-                  'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
-                ), // Placeholder for profile image
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Alban Jaures',
-                style: GoogleFonts.readexPro(
-                  textStyle: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: nameTextColor,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Column(
-                children: [
-                  Text(
-                    'Software Engineer & Mobile App Developer',
-                    style: GoogleFonts.alata(
-                      textStyle: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: subtitleTextColor,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'Certified Backend Developer',
-                    style: GoogleFonts.alata(
-                      textStyle: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: subtitleTextColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          padding: EdgeInsets.symmetric(
+            vertical: isMobile ? 40.0 : 80.0,
+            horizontal: isMobile ? 16.0 : 40.0,
           ),
+          decoration: BoxDecoration(color: headerBgColor),
+          child: isMobile
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(
+                        'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Alban Jaures',
+                      style: GoogleFonts.readexPro(
+                        textStyle: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: nameTextColor,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Software Engineer & Mobile App Developer',
+                      style: GoogleFonts.alata(
+                        textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: subtitleTextColor,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Certified Backend Developer',
+                      style: GoogleFonts.alata(
+                        textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: subtitleTextColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 80,
+                      backgroundImage: NetworkImage(
+                        'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
+                      ),
+                    ),
+                    SizedBox(width: 40),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Alban Jaures',
+                            style: GoogleFonts.readexPro(
+                              textStyle: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: nameTextColor,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Software Engineer & Mobile App Developer',
+                            style: GoogleFonts.alata(
+                              textStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: subtitleTextColor,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'Certified Backend Developer',
+                            style: GoogleFonts.alata(
+                              textStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: subtitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );
   }
 
-  Widget _buildAboutMeSection({required GlobalKey key}) {
+  Widget _buildAboutMeSection({
+    required GlobalKey key,
+    required double screenWidth,
+  }) {
     final titleColor = _isDarkMode
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
     final textColor = _isDarkMode ? Colors.white : Colors.black87;
+    final isMobile = screenWidth < 600;
     return Padding(
       key: key,
-      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 40.0),
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 30.0 : 60.0,
+        horizontal: isMobile ? 16.0 : 40.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -188,17 +257,21 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             'About Me',
             style: GoogleFonts.readexPro(
               textStyle: TextStyle(
-                fontSize: 36,
+                fontSize: isMobile ? 24 : 36,
                 color: titleColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: isMobile ? 10 : 20),
           Text(
             'Software developer passionate about new technologies. I am specialize in building robust and scalable applications as a full-stack software engineer. My expertise lies in backend development using Python and Node.js, where I design and implement APIs, manage databases, and ensure system performance.  On the frontend, I use Flutter to create beautiful and responsive user interfaces that deliver a seamless experience across multiple platforms.',
             style: GoogleFonts.aleo(
-              textStyle: TextStyle(fontSize: 18, color: textColor, height: 1.5),
+              textStyle: TextStyle(
+                fontSize: isMobile ? 14 : 18,
+                color: textColor,
+                height: 1.5,
+              ),
             ),
           ),
         ],
@@ -206,7 +279,10 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     );
   }
 
-  Widget _buildSkillsSection({required GlobalKey key}) {
+  Widget _buildSkillsSection({
+    required GlobalKey key,
+    required double screenWidth,
+  }) {
     final skills = [
       'Flutter',
       'Dart',
@@ -228,11 +304,15 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     final titleColor = _isDarkMode
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
+    final isMobile = screenWidth < 600;
     return Container(
       key: key,
       width: double.infinity,
       color: skillsBgColor,
-      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 40.0),
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 30.0 : 60.0,
+        horizontal: isMobile ? 16.0 : 40.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -240,24 +320,26 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             'Skills',
             style: GoogleFonts.readexPro(
               textStyle: TextStyle(
-                fontSize: 36,
+                fontSize: isMobile ? 24 : 36,
                 color: titleColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: isMobile ? 10 : 20),
           Wrap(
-            spacing: 10.0,
-            runSpacing: 10.0,
-            children: skills.map((skill) => _buildSkillTag(skill)).toList(),
+            spacing: isMobile ? 6.0 : 10.0,
+            runSpacing: isMobile ? 6.0 : 10.0,
+            children: skills
+                .map((skill) => _buildSkillTag(skill, isMobile))
+                .toList(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSkillTag(String skill) {
+  Widget _buildSkillTag(String skill, bool isMobile) {
     final chipBgColor = _isDarkMode
         ? Colors.blue.shade100
         : Colors.blue.shade700;
@@ -266,12 +348,22 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       label: Text(skill),
       backgroundColor: chipBgColor,
-      labelStyle: TextStyle(color: chipTextColor, fontWeight: FontWeight.bold),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      labelStyle: TextStyle(
+        color: chipTextColor,
+        fontWeight: FontWeight.bold,
+        fontSize: isMobile ? 12 : 14,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 8 : 12,
+        vertical: isMobile ? 6 : 8,
+      ),
     );
   }
 
-  Widget _buildProjectsSection({required GlobalKey key}) {
+  Widget _buildProjectsSection({
+    required GlobalKey key,
+    required double screenWidth,
+  }) {
     final projects = [
       {
         'name': 'Simple Shell',
@@ -289,7 +381,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       {
         'name': 'Portfolio Website',
         'description':
-            'This very website, showcasing skills and projects. Built with Flutter!',
+            'This is the website showcasing skills and projects. Built with Flutter!',
         ''
                 'link':
             'https://github.com/DTAJ095/portfolio-project',
@@ -299,9 +391,19 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     final titleColor = _isDarkMode
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
+    final isMobile = screenWidth < 600;
+    final crossAxisCount = screenWidth >= 1200
+        ? 3
+        : screenWidth >= 800
+        ? 2
+        : 1;
+    final childAspectRatio = isMobile ? 2.2 : 3.5;
     return Padding(
       key: key,
-      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 40.0),
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 30.0 : 60.0,
+        horizontal: isMobile ? 16.0 : 40.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -309,25 +411,25 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             'Projects',
             style: GoogleFonts.readexPro(
               textStyle: TextStyle(
-                fontSize: 36,
+                fontSize: isMobile ? 24 : 36,
                 color: titleColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: isMobile ? 10 : 20),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: projects.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1, // Change to 2 or 3 for a desktop layout
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
               crossAxisSpacing: 20.0,
               mainAxisSpacing: 20.0,
-              childAspectRatio: 3.5,
+              childAspectRatio: childAspectRatio,
             ),
             itemBuilder: (context, index) {
-              return _buildProjectCard(projects[index]);
+              return _buildProjectCard(projects[index], isMobile);
             },
           ),
         ],
@@ -335,7 +437,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     );
   }
 
-  Widget _buildProjectCard(Map<String, String> project) {
+  Widget _buildProjectCard(Map<String, String> project, bool isMobile) {
     final cardTextColor = _isDarkMode ? Colors.white : Colors.black87;
     final cardDescColor = _isDarkMode ? Colors.white70 : Colors.black54;
     final cardBgColor = _isDarkMode
@@ -346,32 +448,38 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       color: cardBgColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(isMobile ? 12.0 : 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               project['name']!,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: isMobile ? 16 : 24,
                 fontWeight: FontWeight.bold,
                 color: cardTextColor,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: isMobile ? 4 : 8),
             Text(
               project['description']!,
               style: GoogleFonts.aleo(
-                textStyle: TextStyle(fontSize: 16, color: cardDescColor),
+                textStyle: TextStyle(
+                  fontSize: isMobile ? 12 : 16,
+                  color: cardDescColor,
+                ),
               ),
             ),
-            const Spacer(),
+            Spacer(),
             TextButton(
               onPressed: () => _launchURL(project['link']!),
               child: Text(
                 'View on GitHub',
                 style: GoogleFonts.aleo(
-                  textStyle: TextStyle(fontSize: 14, color: cardDescColor),
+                  textStyle: TextStyle(
+                    fontSize: isMobile ? 12 : 14,
+                    color: cardDescColor,
+                  ),
                 ),
               ),
             ),
@@ -390,7 +498,10 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     }
   }
 
-  Widget _buildContactSection({required GlobalKey key}) {
+  Widget _buildContactSection({
+    required GlobalKey key,
+    required double screenWidth,
+  }) {
     final contactBgColor = _isDarkMode
         ? const Color.fromARGB(255, 23, 2, 27).withValues()
         : Colors.white.withValues();
@@ -399,11 +510,15 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         : Colors.deepPurple;
     final textColor = _isDarkMode ? Colors.white70 : Colors.black87;
     final iconColor = _isDarkMode ? Colors.white : Colors.deepPurple;
+    final isMobile = screenWidth < 600;
     return Container(
       key: key,
       width: double.infinity,
       color: contactBgColor,
-      padding: const EdgeInsets.symmetric(vertical: 60.0, horizontal: 40.0),
+      padding: EdgeInsets.symmetric(
+        vertical: isMobile ? 30.0 : 60.0,
+        horizontal: isMobile ? 16.0 : 40.0,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -411,21 +526,25 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             'Contact Me',
             style: GoogleFonts.readexPro(
               textStyle: TextStyle(
-                fontSize: 36,
+                fontSize: isMobile ? 24 : 36,
                 color: titleColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: isMobile ? 10 : 20),
           Text(
             'Feel free to get in touch! I am always open to discussing new projects, creative ideas, or opportunities to be part of your visions.',
             style: GoogleFonts.aleo(
-              textStyle: TextStyle(fontSize: 16, color: textColor, height: 1.5),
+              textStyle: TextStyle(
+                fontSize: isMobile ? 12 : 16,
+                color: textColor,
+                height: 1.5,
+              ),
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: isMobile ? 20 : 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -433,26 +552,26 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 icon: FaIcon(
                   FontAwesomeIcons.google,
                   color: iconColor,
-                  size: 36,
+                  size: isMobile ? 28 : 36,
                 ),
                 onPressed: () => _launchURL('mailto:albanjaures26@gmail.com'),
               ),
-              const SizedBox(width: 20),
+              SizedBox(width: isMobile ? 10 : 20),
               IconButton(
                 icon: FaIcon(
                   FontAwesomeIcons.linkedin,
                   color: iconColor,
-                  size: 36,
+                  size: isMobile ? 28 : 36,
                 ),
                 onPressed: () =>
                     _launchURL('https://www.linkedin.com/in/alban-jaures'),
               ),
-              const SizedBox(width: 20),
+              SizedBox(width: isMobile ? 10 : 20),
               IconButton(
                 icon: FaIcon(
                   FontAwesomeIcons.github,
                   color: iconColor,
-                  size: 36,
+                  size: isMobile ? 28 : 36,
                 ),
                 onPressed: () => _launchURL('https://github.com/DTAJ095'),
               ),
@@ -463,18 +582,19 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(double screenWidth) {
     final footerBgColor = _isDarkMode
         ? Colors.blue.shade800
         : Colors.blue.shade200;
     final footerTextColor = _isDarkMode ? Colors.white54 : Colors.black54;
+    final isMobile = screenWidth < 600;
     return Container(
       width: double.infinity,
       color: footerBgColor,
-      padding: const EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(isMobile ? 10.0 : 20.0),
       child: Text(
         '© 2025 Alban Jaures. All Rights Reserved.',
-        style: TextStyle(color: footerTextColor, fontSize: 14),
+        style: TextStyle(color: footerTextColor, fontSize: isMobile ? 10 : 14),
         textAlign: TextAlign.center,
       ),
     );
