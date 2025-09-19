@@ -368,13 +368,13 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       {
         'name': 'Simple Shell',
         'description':
-            ' A minimalist UNIX command language interpreter build in C language designed to read and execute commands from both files and standard input.',
+            'A minimalist UNIX command language interpreter build in C language designed to read and execute commands from both files and standard input.',
         'link': 'https://github.com/DTAJ095/simple_shell',
       },
       {
         'name': 'Personal Financial Tracker',
         'description':
-            ' A mobile application build with Flutter for the frontend and Django for the backend designed to help user to track their different expenses.',
+            'A mobile application build with Flutter for the frontend and Django for the backend designed to help user to track their different expenses.',
         'image': 'assets/images/1.png',
         'link': 'https://github.com/Romeo509/Personal_Financial_Tracker',
       },
@@ -382,8 +382,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         'name': 'Portfolio Website',
         'description':
             'This is the website showcasing skills and projects. Built with Flutter!',
-        ''
-                'link':
+        'link':
             'https://github.com/DTAJ095/portfolio-project',
       },
     ];
