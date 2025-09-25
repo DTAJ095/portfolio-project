@@ -21,12 +21,14 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
 
   bool _isDarkMode = true;
 
+  //Handle theme toggle
   void _toggleTheme() {
     setState(() {
       _isDarkMode = !_isDarkMode;
     });
   }
 
+  // Scroll to section
   void _scrollTo(GlobalKey key) {
     final context = key.currentContext;
     if (context != null) {
@@ -297,6 +299,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       'GitHub',
       'Agile Methodologies',
       'NoSQL',
+      'Bash',
     ];
     final skillsBgColor = _isDarkMode
         ? const Color.fromARGB(255, 23, 2, 27).withValues()
