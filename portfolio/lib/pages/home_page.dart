@@ -208,7 +208,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            'Software Engineer & Mobile App Developer',
+                            'Software Engineer & Flutter Developer',
                             style: GoogleFonts.alata(
                               textStyle: TextStyle(
                                 fontSize: 20,
@@ -499,7 +499,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       await launchUrl(Uri.parse(url));
     } else {
       // You can show a SnackBar or an alert dialog here
-      print('Could not launch $url');
+      SnackBar(content: Text(url));
     }
   }
 
