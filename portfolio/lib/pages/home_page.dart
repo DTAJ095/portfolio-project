@@ -599,7 +599,10 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       padding: EdgeInsets.all(isMobile ? 10.0 : 20.0),
       child: Text(
         '© 2025 Alban Jaures. All Rights Reserved.',
-        style: TextStyle(color: footerTextColor, fontSize: isMobile ? 10 : 14),
+        style: TextStyle(
+          color: footerTextColor,
+          fontSize: isMobile ? 8.0 : 10.0,
+        ),
         textAlign: TextAlign.center,
       ),
     );
