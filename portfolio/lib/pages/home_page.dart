@@ -382,16 +382,16 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         'link': 'https://github.com/Romeo509/Personal_Financial_Tracker',
       },
       {
+        'name': 'AfricaStay',
+        'description':
+            "AfricaStay is a travel booking platform designed specifically for exploring and booking accommodations, flights, and other travel services across Africa.\n It aims to provide a seamless experience for travelers looking to discover the diverse cultures, landscapes, and attractions of the African continent.",
+        'link': 'https://github.com/DTAJ095/mvp_repo/tree/main/AfricaStay',
+      },
+      {
         'name': 'Portfolio Website',
         'description':
             'This is the website showcasing skills and projects. Built with Flutter!',
         'link': 'https://github.com/DTAJ095/portfolio-project',
-      },
-      {
-        'name': 'AfricaStay',
-        'description':
-            'AfricaStay is a travel booking platform designed specifically for exploring and booking accommodations, flights, and other travel services across Africa. It aims to provide a seamless experience for travelers looking to discover the diverse cultures, landscapes, and attractions of the African continent.',
-        'link': 'https://github.com/DTAJ095/mvp_repo/tree/main/AfricaStay',
       },
     ];
 
@@ -402,7 +402,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     // Laptop: 900px-1400px, Desktop: >1400px, Tablet: 600-900px, Mobile: <600px
     int crossAxisCount;
     if (screenWidth >= 1400) {
-      crossAxisCount = 3;
+      crossAxisCount = 2;
     } else if (screenWidth >= 900) {
       crossAxisCount = 2;
     } else {
@@ -431,12 +431,12 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
           SizedBox(height: isMobile ? 10 : 20),
           GridView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: AlwaysScrollableScrollPhysics(),
             itemCount: projects.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 20.0,
-              mainAxisSpacing: 20.0,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
               childAspectRatio: childAspectRatio,
             ),
             itemBuilder: (context, index) {
@@ -466,7 +466,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             Text(
               project['name']!,
               style: TextStyle(
-                fontSize: isMobile ? 16 : 24,
+                fontSize: isMobile ? 14 : 24,
                 fontWeight: FontWeight.bold,
                 color: cardTextColor,
               ),
@@ -482,16 +482,25 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
               ),
             ),
             Spacer(),
-            TextButton(
+            MaterialButton(
               onPressed: () => _launchURL(project['link']!),
-              child: Text(
-                'View on GitHub',
-                style: GoogleFonts.aleo(
-                  textStyle: TextStyle(
-                    fontSize: isMobile ? 12 : 14,
+              child: Row(
+                children: [
+                  Text(
+                    'View on GitHub',
+                    style: GoogleFonts.aleo(
+                      textStyle: TextStyle(
+                        fontSize: isMobile ? 10 : 14,
+                        color: cardDescColor,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: isMobile ? 12 : 16,
                     color: cardDescColor,
                   ),
-                ),
+                ],
               ),
             ),
           ],
