@@ -387,6 +387,12 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             'This is the website showcasing skills and projects. Built with Flutter!',
         'link': 'https://github.com/DTAJ095/portfolio-project',
       },
+      {
+        'name': 'AfricaStay',
+        'description':
+            'AfricaStay is a travel booking platform designed specifically for exploring and booking accommodations, flights, and other travel services across Africa. It aims to provide a seamless experience for travelers looking to discover the diverse cultures, landscapes, and attractions of the African continent.',
+        'link': 'https://github.com/DTAJ095/mvp_repo/tree/main/AfricaStay',
+      },
     ];
 
     final titleColor = _isDarkMode
