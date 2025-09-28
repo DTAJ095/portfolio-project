@@ -31,5 +31,4 @@ A personal portfolio web and mobile app built with Flutter. This project showcas
 - Adjust colors and styles as needed for your personal branding.
 
 ## License
-**This project is open source and available for everybody.
-**
+**This project is open source and available for everybody.**
