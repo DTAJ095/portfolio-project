@@ -384,7 +384,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       {
         'name': 'AfricaStay',
         'description':
-            "AfricaStay is a travel booking platform designed specifically for exploring and booking accommodations, flights, and other travel services across Africa.\n It aims to provide a seamless experience for travelers looking to discover the diverse cultures, landscapes, and attractions of the African continent.",
+            "AfricaStay is a travel booking platform designed specifically for exploring and booking accommodations, flights, and other travel services across Africa.",
         'link': 'https://github.com/DTAJ095/mvp_repo/tree/main/AfricaStay',
       },
       {
@@ -404,7 +404,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     if (screenWidth >= 1400) {
       crossAxisCount = 2;
     } else if (screenWidth >= 900) {
-      crossAxisCount = 2;
+      crossAxisCount = 1;
     } else {
       crossAxisCount = 1;
     }
@@ -412,7 +412,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     return Padding(
       key: key,
       padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 30.0 : 60.0,
+        vertical: isMobile ? 60.0 : 80.0,
         horizontal: isMobile ? 16.0 : 40.0,
       ),
       child: Column(
