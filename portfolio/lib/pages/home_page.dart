@@ -400,15 +400,15 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         : Colors.deepPurple;
     final isMobile = screenWidth < 600;
     // Laptop: 900px-1400px, Desktop: >1400px, Tablet: 600-900px, Mobile: <600px
-    int crossAxisCount;
-    if (screenWidth >= 1400) {
-      crossAxisCount = 2;
-    } else if (screenWidth >= 900) {
-      crossAxisCount = 1;
-    } else {
-      crossAxisCount = 1;
-    }
-    final childAspectRatio = isMobile ? 2.2 : 3.5;
+    // int crossAxisCount;
+    // if (screenWidth >= 1400) {
+    //   crossAxisCount = 1;
+    // } else if (screenWidth >= 900) {
+    //   crossAxisCount = 1;
+    // } else {
+    //   crossAxisCount = 1;
+    // }
+    // final childAspectRatio = isMobile ? 2.2 : 3.5;
     return Padding(
       key: key,
       padding: EdgeInsets.symmetric(
@@ -429,92 +429,197 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             ),
           ),
           SizedBox(height: isMobile ? 10 : 20),
-          GridView.builder(
+          ListView.separated(
             shrinkWrap: true,
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
             itemCount: projects.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
-              childAspectRatio: childAspectRatio,
-            ),
             itemBuilder: (context, index) {
-              return _buildProjectCard(projects[index], isMobile);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: _buildProjectContainer(projects[index], isMobile),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return SizedBox(height: isMobile ? 20 : 30);
             },
           ),
+          // GridView.builder(
+          //   shrinkWrap: true,
+          //   physics: AlwaysScrollableScrollPhysics(),
+          //   itemCount: projects.length,
+          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          //     crossAxisCount: crossAxisCount,
+          //     crossAxisSpacing: 10.0,
+          //     mainAxisSpacing: 10.0,
+          //     childAspectRatio: childAspectRatio,
+          //   ),
+          //   itemBuilder: (context, index) {
+          //     return _buildProjectCard(projects[index], isMobile);
+          //   },
+          // ),
         ],
       ),
     );
   }
 
-  Widget _buildProjectCard(Map<String, String> project, bool isMobile) {
-    final cardTextColor = _isDarkMode ? Colors.white : Colors.black87;
-    final cardDescColor = _isDarkMode ? Colors.white70 : Colors.black54;
-    final cardBgColor = _isDarkMode
+  Widget _buildProjectContainer(Map<String, String> project, bool isMobile) {
+    final textColor = _isDarkMode ? Colors.white : Colors.black87;
+    final desColor = _isDarkMode ? Colors.white70 : Colors.black54;
+    final backgroundColor = _isDarkMode
         ? Colors.deepPurple.shade900
         : Colors.blue.shade100;
-    return Card(
-      elevation: 4,
-      color: cardBgColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: EdgeInsets.all(isMobile ? 12.0 : 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              project['name']!,
-              style: TextStyle(
-                fontSize: isMobile ? 14 : 24,
-                fontWeight: FontWeight.bold,
-                color: cardTextColor,
-              ),
-            ),
-            SizedBox(height: isMobile ? 4 : 8),
-            Text(
-              project['description']!,
-              style: GoogleFonts.aleo(
-                textStyle: TextStyle(
-                  fontSize: isMobile ? 12 : 16,
-                  color: cardDescColor,
+    return Container(
+      height: 500,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: _isDarkMode ? Colors.white : Colors.black12,
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Card(
+        elevation: 10,
+        color: backgroundColor,
+        child: Padding(
+          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                project['name'] ?? 'Project Name',
+                style: GoogleFonts.readexPro(
+                  textStyle: TextStyle(
+                    fontSize: isMobile ? 20 : 24,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
               ),
-            ),
-            Spacer(),
-            MaterialButton(
-              onPressed: () => _launchURL(project['link']!),
-              child: Row(
-                children: [
-                  Text(
-                    'View on GitHub',
-                    style: GoogleFonts.aleo(
-                      textStyle: TextStyle(
-                        fontSize: isMobile ? 10 : 14,
-                        color: cardDescColor,
-                      ),
+              SizedBox(height: isMobile ? 8 : 12),
+              Expanded(
+                child: Text(
+                  project['description'] ?? 'Project Description',
+                  style: GoogleFonts.aleo(
+                    textStyle: TextStyle(
+                      fontSize: isMobile ? 14 : 16,
+                      color: desColor,
+                      height: 1.5,
                     ),
                   ),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: isMobile ? 12 : 16,
-                    color: cardDescColor,
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+              Spacer(),
+              InkWell(
+                onHover: (value) => _isHovering(),
+                highlightColor: _isDarkMode
+                    ? Colors.deepPurpleAccent.withAlpha(30)
+                    : Colors.deepPurple.withAlpha(30),
+                customBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => {
+                  if (project['link'] != null) {_launchURL(project['link']!)},
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'View Project',
+                      style: GoogleFonts.readexPro(
+                        textStyle: TextStyle(
+                          fontSize: isMobile ? 14 : 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                      size: isMobile ? 16 : 20,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  late AnimationController animationController;
+  void _isHovering() {}
+  // Widget _buildProjectCard(Map<String, String> project, bool isMobile) {
+  //   final cardTextColor = _isDarkMode ? Colors.white : Colors.black87;
+  //   final cardDescColor = _isDarkMode ? Colors.white70 : Colors.black54;
+  //   final cardBgColor = _isDarkMode
+  //       ? Colors.deepPurple.shade900
+  //       : Colors.blue.shade100;
+  //   return StatefulBuilder(
+  //     builder: (context, setState) {
+  //       return InkWell(
+  //         onTap: () {
+  //           if (project['link'] != null) {
+  //             _launchURL(project['link']!);
+  //           }
+  //         },
+  //         onHover: (value) => setState(() {}),
+  //         child: AnimatedContainer(
+  //           duration: Duration(milliseconds: 300),
+  //           curve: Curves.easeInOut,
+  //           decoration: BoxDecoration(
+  //             color: cardBgColor,
+  //             borderRadius: BorderRadius.circular(15),
+  //           ),
+  //           child: Padding(
+  //             padding: EdgeInsets.all(isMobile ? 12.0 : 20.0),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   project['name'] ?? 'Project Name',
+  //                   style: GoogleFonts.readexPro(
+  //                     textStyle: TextStyle(
+  //                       fontSize: isMobile ? 16 : 20,
+  //                       fontWeight: FontWeight.bold,
+  //                       color: cardTextColor,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: isMobile ? 6 : 10),
+  //                 Expanded(
+  //                   child: Text(
+  //                     project['description'] ?? 'Project Description',
+  //                     style: GoogleFonts.aleo(
+  //                       textStyle: TextStyle(
+  //                         fontSize: isMobile ? 12 : 14,
+  //                         color: cardDescColor,
+  //                         height: 1.4,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
   void _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
       // You can show a SnackBar or an alert dialog here
-      SnackBar(content: Text(url));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not launch $url')));
     }
   }
 
