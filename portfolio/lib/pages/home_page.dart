@@ -131,6 +131,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
+          height: isMobile ? 300 : 450,
           width: double.infinity,
           padding: EdgeInsets.symmetric(
             vertical: isMobile ? 40.0 : 80.0,
@@ -138,51 +139,54 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
           ),
           decoration: BoxDecoration(color: headerBgColor),
           child: isMobile
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(
-                        'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Alban Jaures',
-                      style: GoogleFonts.readexPro(
-                        textStyle: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: nameTextColor,
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(
+                          'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
                         ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Software Engineer & Mobile App Developer',
-                      style: GoogleFonts.alata(
-                        textStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: subtitleTextColor,
+                      SizedBox(height: 16),
+                      Text(
+                        'Alban Jaures',
+                        style: GoogleFonts.readexPro(
+                          textStyle: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: nameTextColor,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      'Certified Backend Developer',
-                      style: GoogleFonts.alata(
-                        textStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: subtitleTextColor,
+                      SizedBox(height: 8),
+                      Text(
+                        'Software Engineer & Mobile App Developer',
+                        style: GoogleFonts.alata(
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: subtitleTextColor,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      Text(
+                        'Certified Backend Developer',
+                        style: GoogleFonts.alata(
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: subtitleTextColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
-              : Row(
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CircleAvatar(
@@ -194,7 +198,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                     SizedBox(width: 40),
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             'Alban Jaures',
