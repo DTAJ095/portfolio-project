@@ -297,7 +297,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     required double screenWidth,
   }) {
     final skills = [
-      'Flutter Developer',
+      'Flutter',
       'Dart',
       'Node.js',
       'Python',
