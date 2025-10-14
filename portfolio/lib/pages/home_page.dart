@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:portfolio/widgets/on_hover_button.dart';
+import 'package:portfolio/widgets/on_hover_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PortfolioHomePage extends StatefulWidget {
@@ -104,26 +106,31 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   Widget _navButton(String title, GlobalKey key, double screenWidth) {
     return TextButton(
       onPressed: () => _scrollTo(key),
-      child: Text(
-        title,
-        style: GoogleFonts.readexPro(
-          textStyle: TextStyle(
-            fontSize: screenWidth < 600 ? 13 : 15,
-            color: Colors.deepPurpleAccent,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      child: OnHoverText(
+        builder: (bool isHovered) {
+          final color = isHovered
+              ? Colors.amberAccent
+              : Colors.deepPurpleAccent;
+          return Text(
+            title,
+            style: GoogleFonts.readexPro(
+              textStyle: TextStyle(
+                fontSize: screenWidth < 600 ? 13 : 15,
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildHeaderSection(double screenWidth) {
     final headerBgColor = _isDarkMode
-        ? const Color.fromARGB(255, 23, 2, 27).withValues()
-        : Colors.white.withValues();
-    final nameTextColor = _isDarkMode
-        ? Colors.deepPurple
-        : Colors.deepPurpleAccent;
+        ? Colors.deepPurple.shade900.withValues()
+        : Colors.blue.shade100.withValues();
+    final nameTextColor = _isDarkMode ? Colors.white70 : Colors.black;
     final subtitleTextColor = _isDarkMode ? Colors.white70 : Colors.black87;
     final isMobile = screenWidth < 600;
     return ClipRRect(
@@ -290,9 +297,8 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     required double screenWidth,
   }) {
     final skills = [
-      'Flutter',
+      'Flutter Developer',
       'Dart',
-      'Mobile Development',
       'Node.js',
       'Python',
       'C',
@@ -306,8 +312,8 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       'Bash',
     ];
     final skillsBgColor = _isDarkMode
-        ? const Color.fromARGB(255, 23, 2, 27).withValues()
-        : Colors.white.withValues();
+        ? Colors.deepPurple.shade900.withValues()
+        : Colors.blue.shade100.withValues();
     final titleColor = _isDarkMode
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
@@ -350,7 +356,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     final chipBgColor = _isDarkMode
         ? Colors.blue.shade100
         : Colors.blue.shade700;
-    final chipTextColor = _isDarkMode ? Colors.black : Colors.black;
+    final chipTextColor = _isDarkMode ? Colors.black : Colors.white;
     return Chip(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       label: Text(skill),
@@ -474,7 +480,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         ? Colors.deepPurple.shade900
         : Colors.blue.shade100;
     return Container(
-      height: 500,
+      height: 490,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20.0),
@@ -518,37 +524,75 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 ),
               ),
               Spacer(),
-              InkWell(
-                onHover: (value) => _isHovering(),
-                highlightColor: _isDarkMode
-                    ? Colors.deepPurpleAccent.withAlpha(30)
-                    : Colors.deepPurple.withAlpha(30),
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                borderRadius: BorderRadius.circular(8),
-                onTap: () => {
-                  if (project['link'] != null) {_launchURL(project['link']!)},
-                },
-                child: Row(
-                  children: [
-                    Text(
-                      'View Project',
-                      style: GoogleFonts.readexPro(
-                        textStyle: TextStyle(
-                          fontSize: isMobile ? 14 : 16,
-                          color: Colors.white,
+              OnHoverButton(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  width: isMobile ? 100.0 : 120.0,
+                  child: MaterialButton(
+                    onPressed: () {
+                      if (project['link'] != null) {
+                        _launchURL(project['link']!);
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          'View Project',
+                          style: GoogleFonts.aBeeZee(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: _isDarkMode
+                                  ? Colors.amberAccent
+                                  : Colors.black,
+                            ),
+                          ),
                         ),
-                      ),
+                        Icon(
+                          Icons.arrow_forward_sharp,
+                          color: _isDarkMode
+                              ? Colors.amberAccent
+                              : Colors.black,
+                          size: 15.0,
+                        ),
+                      ],
                     ),
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                      size: isMobile ? 16 : 20,
-                    ),
-                  ],
+                  ),
                 ),
               ),
+              // InkWell(
+              //   onHover: (value) => _isHovering(),
+              //   highlightColor: _isDarkMode
+              //       ? Colors.deepPurpleAccent.withAlpha(30)
+              //       : Colors.deepPurple.withAlpha(30),
+              //   customBorder: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(8),
+              //   ),
+              //   borderRadius: BorderRadius.circular(8),
+              //   onTap: () => {
+              //     if (project['link'] != null) {_launchURL(project['link']!)},
+              //   },
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'View Project',
+              //         style: GoogleFonts.readexPro(
+              //           textStyle: TextStyle(
+              //             fontSize: isMobile ? 14 : 16,
+              //             color: Colors.white,
+              //           ),
+              //         ),
+              //       ),
+              //       Icon(
+              //         Icons.arrow_forward,
+              //         color: Colors.white,
+              //         size: isMobile ? 16 : 20,
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -556,8 +600,6 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     );
   }
 
-  late AnimationController animationController;
-  void _isHovering() {}
   // Widget _buildProjectCard(Map<String, String> project, bool isMobile) {
   //   final cardTextColor = _isDarkMode ? Colors.white : Colors.black87;
   //   final cardDescColor = _isDarkMode ? Colors.white70 : Colors.black54;
@@ -633,7 +675,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   }) {
     final contactBgColor = _isDarkMode
         ? const Color.fromARGB(255, 23, 2, 27).withValues()
-        : Colors.white.withValues();
+        : Colors.blue.shade100.withValues();
     final titleColor = _isDarkMode
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
