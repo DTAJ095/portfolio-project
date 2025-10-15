@@ -144,7 +144,16 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             vertical: isMobile ? 40.0 : 80.0,
             horizontal: isMobile ? 16.0 : 40.0,
           ),
-          decoration: BoxDecoration(color: headerBgColor),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                headerBgColor,
+                const Color.fromARGB(255, 26, 11, 66).withAlpha(100),
+              ],
+            ),
+          ),
           child: isMobile
               ? Center(
                   child: Column(
@@ -477,7 +486,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     final textColor = _isDarkMode ? Colors.white : Colors.black87;
     final desColor = _isDarkMode ? Colors.white70 : Colors.black54;
     final backgroundColor = _isDarkMode
-        ? Colors.deepPurple.shade900
+        ? const Color.fromARGB(255, 77, 30, 158)
         : Colors.blue.shade100;
     return Container(
       height: 490,
