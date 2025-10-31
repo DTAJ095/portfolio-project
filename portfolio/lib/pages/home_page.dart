@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/widgets/on_hover_button.dart';
+import 'package:portfolio/widgets/on_hover_container.dart';
 import 'package:portfolio/widgets/on_hover_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -162,9 +163,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                     children: [
                       CircleAvatar(
                         radius: 60,
-                        backgroundImage: NetworkImage(
-                          'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
-                        ),
+                        backgroundImage: AssetImage('assests/mypic.jpg'),
                       ),
                       SizedBox(height: 16),
                       Text(
@@ -207,9 +206,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                   children: [
                     CircleAvatar(
                       radius: 80,
-                      backgroundImage: NetworkImage(
-                        'https://media.licdn.com/dms/image/v2/D4D03AQECakVbwbwDug/profile-displayphoto-shrink_200_200/B4DZS7f0H8GcAY-/0/1738312468750?e=1760572800&v=beta&t=-YOX03kIQSdg638D1FKtTNKmxA6D2Njq8RkpSQmJvco',
-                      ),
+                      backgroundImage: AssetImage('assets/mypic.jpg'),
                     ),
                     SizedBox(width: 40),
                     Expanded(
@@ -488,121 +485,123 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
     final backgroundColor = _isDarkMode
         ? const Color.fromARGB(255, 77, 30, 158)
         : Colors.blue.shade100;
-    return Container(
-      height: 490,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: _isDarkMode ? Colors.white : Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Card(
-        elevation: 10,
-        color: backgroundColor,
-        child: Padding(
-          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                project['name'] ?? 'Project Name',
-                style: GoogleFonts.readexPro(
-                  textStyle: TextStyle(
-                    fontSize: isMobile ? 20 : 24,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
-                ),
-              ),
-              SizedBox(height: isMobile ? 8 : 12),
-              Expanded(
-                child: Text(
-                  project['description'] ?? 'Project Description',
-                  style: GoogleFonts.aleo(
+    return OnHoverContainer(
+      child: Container(
+        height: 490,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(20.0),
+          boxShadow: [
+            BoxShadow(
+              color: _isDarkMode ? Colors.white : Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Card(
+          elevation: 10,
+          color: backgroundColor,
+          child: Padding(
+            padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  project['name'] ?? 'Project Name',
+                  style: GoogleFonts.readexPro(
                     textStyle: TextStyle(
-                      fontSize: isMobile ? 14 : 16,
-                      color: desColor,
-                      height: 1.5,
+                      fontSize: isMobile ? 20 : 24,
+                      fontWeight: FontWeight.bold,
+                      color: textColor,
                     ),
                   ),
                 ),
-              ),
-              Spacer(),
-              OnHoverButton(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                SizedBox(height: isMobile ? 8 : 12),
+                Expanded(
+                  child: Text(
+                    project['description'] ?? 'Project Description',
+                    style: GoogleFonts.aleo(
+                      textStyle: TextStyle(
+                        fontSize: isMobile ? 14 : 16,
+                        color: desColor,
+                        height: 1.5,
+                      ),
+                    ),
                   ),
-                  width: isMobile ? 100.0 : 120.0,
-                  child: MaterialButton(
-                    onPressed: () {
-                      if (project['link'] != null) {
-                        _launchURL(project['link']!);
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'View Project',
-                          style: GoogleFonts.aBeeZee(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: _isDarkMode
-                                  ? Colors.amberAccent
-                                  : Colors.black,
+                ),
+                Spacer(),
+                OnHoverButton(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    width: isMobile ? 100.0 : 120.0,
+                    child: MaterialButton(
+                      onPressed: () {
+                        if (project['link'] != null) {
+                          _launchURL(project['link']!);
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'View Project',
+                            style: GoogleFonts.aBeeZee(
+                              textStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: _isDarkMode
+                                    ? Colors.amberAccent
+                                    : Colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_sharp,
-                          color: _isDarkMode
-                              ? Colors.amberAccent
-                              : Colors.black,
-                          size: 15.0,
-                        ),
-                      ],
+                          Icon(
+                            Icons.arrow_forward_sharp,
+                            color: _isDarkMode
+                                ? Colors.amberAccent
+                                : Colors.black,
+                            size: 15.0,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // InkWell(
-              //   onHover: (value) => _isHovering(),
-              //   highlightColor: _isDarkMode
-              //       ? Colors.deepPurpleAccent.withAlpha(30)
-              //       : Colors.deepPurple.withAlpha(30),
-              //   customBorder: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(8),
-              //   ),
-              //   borderRadius: BorderRadius.circular(8),
-              //   onTap: () => {
-              //     if (project['link'] != null) {_launchURL(project['link']!)},
-              //   },
-              //   child: Row(
-              //     children: [
-              //       Text(
-              //         'View Project',
-              //         style: GoogleFonts.readexPro(
-              //           textStyle: TextStyle(
-              //             fontSize: isMobile ? 14 : 16,
-              //             color: Colors.white,
-              //           ),
-              //         ),
-              //       ),
-              //       Icon(
-              //         Icons.arrow_forward,
-              //         color: Colors.white,
-              //         size: isMobile ? 16 : 20,
-              //       ),
-              //     ],
-              //   ),
-              // ),
-            ],
+                // InkWell(
+                //   onHover: (value) => _isHovering(),
+                //   highlightColor: _isDarkMode
+                //       ? Colors.deepPurpleAccent.withAlpha(30)
+                //       : Colors.deepPurple.withAlpha(30),
+                //   customBorder: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(8),
+                //   ),
+                //   borderRadius: BorderRadius.circular(8),
+                //   onTap: () => {
+                //     if (project['link'] != null) {_launchURL(project['link']!)},
+                //   },
+                //   child: Row(
+                //     children: [
+                //       Text(
+                //         'View Project',
+                //         style: GoogleFonts.readexPro(
+                //           textStyle: TextStyle(
+                //             fontSize: isMobile ? 14 : 16,
+                //             color: Colors.white,
+                //           ),
+                //         ),
+                //       ),
+                //       Icon(
+                //         Icons.arrow_forward,
+                //         color: Colors.white,
+                //         size: isMobile ? 16 : 20,
+                //       ),
+                //     ],
+                //   ),
+                // ),
+              ],
+            ),
           ),
         ),
       ),
