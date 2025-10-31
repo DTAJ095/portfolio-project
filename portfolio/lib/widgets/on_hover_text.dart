@@ -16,7 +16,7 @@ class _OnHoverTextState extends State<OnHoverText> {
   @override
   Widget build(BuildContext context) {
     final hoverTransform = Matrix4.identity()
-      ..scale(1.1)
+      ..scale(1.02)
       ..translate(0, -4, 0);
     final transformed = _isHovered ? hoverTransform : Matrix4.identity();
     return MouseRegion(

@@ -87,9 +87,12 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                 _buildHeaderSection(screenWidth),
                 _buildAboutMeSection(key: _aboutKey, screenWidth: screenWidth),
                 _buildSkillsSection(key: _skillsKey, screenWidth: screenWidth),
-                _buildProjectsSection(
-                  key: _projectsKey,
-                  screenWidth: screenWidth,
+                SizedBox(
+                  width: double.infinity,
+                  child: _buildProjectsSection(
+                    key: _projectsKey,
+                    screenWidth: screenWidth,
+                  ),
                 ),
                 _buildContactSection(
                   key: _contactKey,
@@ -109,9 +112,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
       onPressed: () => _scrollTo(key),
       child: OnHoverText(
         builder: (bool isHovered) {
-          final color = isHovered
-              ? Colors.amberAccent
-              : Colors.deepPurpleAccent;
+          final color = isHovered ? Colors.white : Colors.deepPurpleAccent;
           return Text(
             title,
             style: GoogleFonts.readexPro(
@@ -432,7 +433,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         horizontal: isMobile ? 16.0 : 40.0,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             'Projects',
@@ -445,20 +446,23 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             ),
           ),
           SizedBox(height: isMobile ? 10 : 20),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.vertical,
-            itemCount: projects.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: _buildProjectContainer(projects[index], isMobile),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return SizedBox(height: isMobile ? 20 : 30);
-            },
+          SizedBox(
+            width: 1700.0,
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: projects.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: _buildProjectContainer(projects[index], isMobile),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(height: isMobile ? 20 : 30);
+              },
+            ),
           ),
           // GridView.builder(
           //   shrinkWrap: true,
@@ -486,122 +490,108 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         ? const Color.fromARGB(255, 77, 30, 158)
         : Colors.blue.shade100;
     return OnHoverContainer(
-      child: Container(
-        height: 490,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: [
-            BoxShadow(
-              color: _isDarkMode ? Colors.white : Colors.black12,
-              blurRadius: 8,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Card(
-          elevation: 10,
-          color: backgroundColor,
-          child: Padding(
-            padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  project['name'] ?? 'Project Name',
-                  style: GoogleFonts.readexPro(
+      child: Card(
+        elevation: 10,
+        color: backgroundColor,
+        child: Padding(
+          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                project['name'] ?? 'Project Name',
+                style: GoogleFonts.readexPro(
+                  textStyle: TextStyle(
+                    fontSize: isMobile ? 20 : 24,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              SizedBox(height: isMobile ? 8 : 12),
+              Expanded(
+                child: Text(
+                  project['description'] ?? 'Project Description',
+                  style: GoogleFonts.aleo(
                     textStyle: TextStyle(
-                      fontSize: isMobile ? 20 : 24,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
+                      fontSize: isMobile ? 14 : 16,
+                      color: desColor,
+                      height: 1.5,
                     ),
                   ),
                 ),
-                SizedBox(height: isMobile ? 8 : 12),
-                Expanded(
-                  child: Text(
-                    project['description'] ?? 'Project Description',
-                    style: GoogleFonts.aleo(
-                      textStyle: TextStyle(
-                        fontSize: isMobile ? 14 : 16,
-                        color: desColor,
-                        height: 1.5,
-                      ),
-                    ),
+              ),
+              Spacer(),
+              OnHoverButton(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                ),
-                Spacer(),
-                OnHoverButton(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: isMobile ? 100.0 : 120.0,
-                    child: MaterialButton(
-                      onPressed: () {
-                        if (project['link'] != null) {
-                          _launchURL(project['link']!);
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            'View Project',
-                            style: GoogleFonts.aBeeZee(
-                              textStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: _isDarkMode
-                                    ? Colors.amberAccent
-                                    : Colors.black,
-                              ),
+                  width: isMobile ? 100.0 : 120.0,
+                  child: MaterialButton(
+                    onPressed: () {
+                      if (project['link'] != null) {
+                        _launchURL(project['link']!);
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          'View Project',
+                          style: GoogleFonts.aBeeZee(
+                            textStyle: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: _isDarkMode
+                                  ? Colors.amberAccent
+                                  : Colors.black,
                             ),
                           ),
-                          Icon(
-                            Icons.arrow_forward_sharp,
-                            color: _isDarkMode
-                                ? Colors.amberAccent
-                                : Colors.black,
-                            size: 15.0,
-                          ),
-                        ],
-                      ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_sharp,
+                          color: _isDarkMode
+                              ? Colors.amberAccent
+                              : Colors.black,
+                          size: 15.0,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                // InkWell(
-                //   onHover: (value) => _isHovering(),
-                //   highlightColor: _isDarkMode
-                //       ? Colors.deepPurpleAccent.withAlpha(30)
-                //       : Colors.deepPurple.withAlpha(30),
-                //   customBorder: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.circular(8),
-                //   ),
-                //   borderRadius: BorderRadius.circular(8),
-                //   onTap: () => {
-                //     if (project['link'] != null) {_launchURL(project['link']!)},
-                //   },
-                //   child: Row(
-                //     children: [
-                //       Text(
-                //         'View Project',
-                //         style: GoogleFonts.readexPro(
-                //           textStyle: TextStyle(
-                //             fontSize: isMobile ? 14 : 16,
-                //             color: Colors.white,
-                //           ),
-                //         ),
-                //       ),
-                //       Icon(
-                //         Icons.arrow_forward,
-                //         color: Colors.white,
-                //         size: isMobile ? 16 : 20,
-                //       ),
-                //     ],
-                //   ),
-                // ),
-              ],
-            ),
+              ),
+              // InkWell(
+              //   onHover: (value) => _isHovering(),
+              //   highlightColor: _isDarkMode
+              //       ? Colors.deepPurpleAccent.withAlpha(30)
+              //       : Colors.deepPurple.withAlpha(30),
+              //   customBorder: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(8),
+              //   ),
+              //   borderRadius: BorderRadius.circular(8),
+              //   onTap: () => {
+              //     if (project['link'] != null) {_launchURL(project['link']!)},
+              //   },
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'View Project',
+              //         style: GoogleFonts.readexPro(
+              //           textStyle: TextStyle(
+              //             fontSize: isMobile ? 14 : 16,
+              //             color: Colors.white,
+              //           ),
+              //         ),
+              //       ),
+              //       Icon(
+              //         Icons.arrow_forward,
+              //         color: Colors.white,
+              //         size: isMobile ? 16 : 20,
+              //       ),
+              //     ],
+              //   ),
+              // ),
+            ],
           ),
         ),
       ),
