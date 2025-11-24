@@ -416,16 +416,15 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         ? Colors.deepPurpleAccent
         : Colors.deepPurple;
     final isMobile = screenWidth < 600;
-    // Laptop: 900px-1400px, Desktop: >1400px, Tablet: 600-900px, Mobile: <600px
-    // int crossAxisCount;
-    // if (screenWidth >= 1400) {
-    //   crossAxisCount = 1;
-    // } else if (screenWidth >= 900) {
-    //   crossAxisCount = 1;
-    // } else {
-    //   crossAxisCount = 1;
-    // }
-    // final childAspectRatio = isMobile ? 2.2 : 3.5;
+    int crossAxisCount;
+    if (screenWidth >= 1400) {
+      crossAxisCount = 2;
+    } else if (screenWidth >= 900) {
+      crossAxisCount = 1;
+    } else {
+      crossAxisCount = 1;
+    }
+    final childAspectRatio = isMobile ? 2.2 : 3.5;
     return Padding(
       key: key,
       padding: EdgeInsets.symmetric(
@@ -446,157 +445,242 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
             ),
           ),
           SizedBox(height: isMobile ? 10 : 20),
+          // SizedBox(
+          //   width: 1700.0,
+          //   child: ListView.separated(
+          //     shrinkWrap: true,
+          //     physics: NeverScrollableScrollPhysics(),
+          //     scrollDirection: Axis.vertical,
+          //     itemCount: projects.length,
+          //     itemBuilder: (context, index) {
+          //       return Padding(
+          //         padding: const EdgeInsets.only(bottom: 12.0),
+          //         child: _buildProjectContainer(projects[index], isMobile),
+          //       );
+          //     },
+          //     separatorBuilder: (BuildContext context, int index) {
+          //       return SizedBox(height: isMobile ? 20 : 30);
+          //     },
+          //   ),
+          // ),
           SizedBox(
-            width: 1700.0,
-            child: ListView.separated(
-              shrinkWrap: true,
+            height: isMobile ? 600 : 800,
+            child: GridView.builder(
               physics: NeverScrollableScrollPhysics(),
-              scrollDirection: Axis.vertical,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: isMobile ? 10.0 : 50.0,
+                mainAxisSpacing: isMobile ? 10.0 : 50.0,
+                childAspectRatio: childAspectRatio,
+              ),
               itemCount: projects.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: _buildProjectContainer(projects[index], isMobile),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: isMobile ? 20 : 30);
+                return _buildProjectContainer(projects[index], isMobile);
               },
             ),
           ),
-          // GridView.builder(
-          //   shrinkWrap: true,
-          //   physics: AlwaysScrollableScrollPhysics(),
-          //   itemCount: projects.length,
-          //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //     crossAxisCount: crossAxisCount,
-          //     crossAxisSpacing: 10.0,
-          //     mainAxisSpacing: 10.0,
-          //     childAspectRatio: childAspectRatio,
-          //   ),
-          //   itemBuilder: (context, index) {
-          //     return _buildProjectCard(projects[index], isMobile);
-          //   },
-          // ),
         ],
       ),
     );
   }
 
   Widget _buildProjectContainer(Map<String, String> project, bool isMobile) {
-    final textColor = _isDarkMode ? Colors.white : Colors.black87;
-    final desColor = _isDarkMode ? Colors.white70 : Colors.black54;
-    final backgroundColor = _isDarkMode
-        ? const Color.fromARGB(255, 77, 30, 158)
-        : Colors.blue.shade100;
     return OnHoverContainer(
-      child: Card(
-        elevation: 10,
-        color: backgroundColor,
-        child: Padding(
-          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                project['name'] ?? 'Project Name',
-                style: GoogleFonts.readexPro(
+      child: Padding(
+        padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              project['name'] ?? 'Project Name',
+              style: GoogleFonts.readexPro(
+                textStyle: TextStyle(
+                  fontSize: isMobile ? 20 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: _isDarkMode ? Colors.white : Colors.white70,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                project['description'] ?? 'Project Description',
+                style: GoogleFonts.aleo(
                   textStyle: TextStyle(
-                    fontSize: isMobile ? 20 : 24,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
+                    fontSize: isMobile ? 14 : 16,
+                    color: _isDarkMode ? Colors.white70 : Colors.white70,
+                    height: 1.5,
                   ),
                 ),
               ),
-              SizedBox(height: isMobile ? 8 : 12),
-              Expanded(
-                child: Text(
-                  project['description'] ?? 'Project Description',
-                  style: GoogleFonts.aleo(
-                    textStyle: TextStyle(
-                      fontSize: isMobile ? 14 : 16,
-                      color: desColor,
-                      height: 1.5,
-                    ),
-                  ),
+            ),
+            Spacer(),
+            OnHoverButton(
+              child: Container(
+                width: isMobile ? 100.0 : 120.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-              Spacer(),
-              OnHoverButton(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  width: isMobile ? 100.0 : 120.0,
-                  child: MaterialButton(
-                    onPressed: () {
-                      if (project['link'] != null) {
-                        _launchURL(project['link']!);
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'View Project',
-                          style: GoogleFonts.aBeeZee(
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: _isDarkMode
-                                  ? Colors.amberAccent
-                                  : Colors.black,
-                            ),
+                child: MaterialButton(
+                  onPressed: () {
+                    if (project['link'] != null) {
+                      _launchURL(project['link']!);
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        'View Project',
+                        style: GoogleFonts.aBeeZee(
+                          textStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: _isDarkMode
+                                ? Colors.amberAccent
+                                : Colors.black,
                           ),
                         ),
-                        Icon(
-                          Icons.arrow_forward_sharp,
-                          color: _isDarkMode
-                              ? Colors.amberAccent
-                              : Colors.black,
-                          size: 15.0,
-                        ),
-                      ],
-                    ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_sharp,
+                        color: _isDarkMode ? Colors.amberAccent : Colors.black,
+                        size: 15.0,
+                      ),
+                    ],
                   ),
                 ),
               ),
-              // InkWell(
-              //   onHover: (value) => _isHovering(),
-              //   highlightColor: _isDarkMode
-              //       ? Colors.deepPurpleAccent.withAlpha(30)
-              //       : Colors.deepPurple.withAlpha(30),
-              //   customBorder: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(8),
-              //   ),
-              //   borderRadius: BorderRadius.circular(8),
-              //   onTap: () => {
-              //     if (project['link'] != null) {_launchURL(project['link']!)},
-              //   },
-              //   child: Row(
-              //     children: [
-              //       Text(
-              //         'View Project',
-              //         style: GoogleFonts.readexPro(
-              //           textStyle: TextStyle(
-              //             fontSize: isMobile ? 14 : 16,
-              //             color: Colors.white,
-              //           ),
-              //         ),
-              //       ),
-              //       Icon(
-              //         Icons.arrow_forward,
-              //         color: Colors.white,
-              //         size: isMobile ? 16 : 20,
-              //       ),
-              //     ],
-              //   ),
-              // ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  // Widget _buildProjectContainer(Map<String, String> project, bool isMobile) {
+  //   final textColor = _isDarkMode ? Colors.white : Colors.black87;
+  //   final desColor = _isDarkMode ? Colors.white70 : Colors.black54;
+  //   final backgroundColor = _isDarkMode
+  //       ? const Color.fromARGB(255, 77, 30, 158)
+  //       : Colors.blue.shade100;
+  //   return OnHoverContainer(
+  //     child: Card(
+  //       //color: backgroundColor,
+  //       //surfaceTintColor: Color.fromARGB(255, 185, 165, 157),
+  //       elevation: 10,
+  //       child: Container(
+  //         height: 450,
+  //         decoration: BoxDecoration(
+  //           gradient: LinearGradient(
+  //             begin: AlignmentGeometry.topLeft,
+  //             end: AlignmentGeometry.bottomRight,
+  //             colors: [backgroundColor, Color.fromARGB(250, 70, 50, 40)],
+  //           ),
+  //         ),
+  //         child: Padding(
+  //           padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 project['name'] ?? 'Project Name',
+  //                 style: GoogleFonts.readexPro(
+  //                   textStyle: TextStyle(
+  //                     fontSize: isMobile ? 20 : 24,
+  //                     fontWeight: FontWeight.bold,
+  //                     color: textColor,
+  //                   ),
+  //                 ),
+  //               ),
+  //               SizedBox(height: isMobile ? 8 : 12),
+  //               Expanded(
+  //                 child: Text(
+  //                   project['description'] ?? 'Project Description',
+  //                   style: GoogleFonts.aleo(
+  //                     textStyle: TextStyle(
+  //                       fontSize: isMobile ? 14 : 16,
+  //                       color: desColor,
+  //                       height: 1.5,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Spacer(),
+  //               OnHoverButton(
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(20),
+  //                   ),
+  //                   width: isMobile ? 100.0 : 120.0,
+  //                   child: MaterialButton(
+  //                     onPressed: () {
+  //                       if (project['link'] != null) {
+  //                         _launchURL(project['link']!);
+  //                       }
+  //                     },
+  //                     child: Row(
+  //                       children: [
+  //                         Text(
+  //                           'View Project',
+  //                           style: GoogleFonts.aBeeZee(
+  //                             textStyle: TextStyle(
+  //                               fontSize: 15,
+  //                               fontWeight: FontWeight.bold,
+  //                               color: _isDarkMode
+  //                                   ? Colors.amberAccent
+  //                                   : Colors.black,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Icon(
+  //                           Icons.arrow_forward_sharp,
+  //                           color: _isDarkMode
+  //                               ? Colors.amberAccent
+  //                               : Colors.black,
+  //                           size: 15.0,
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               // InkWell(
+  //               //   onHover: (value) => _isHovering(),
+  //               //   highlightColor: _isDarkMode
+  //               //       ? Colors.deepPurpleAccent.withAlpha(30)
+  //               //       : Colors.deepPurple.withAlpha(30),
+  //               //   customBorder: RoundedRectangleBorder(
+  //               //     borderRadius: BorderRadius.circular(8),
+  //               //   ),
+  //               //   borderRadius: BorderRadius.circular(8),
+  //               //   onTap: () => {
+  //               //     if (project['link'] != null) {_launchURL(project['link']!)},
+  //               //   },
+  //               //   child: Row(
+  //               //     children: [
+  //               //       Text(
+  //               //         'View Project',
+  //               //         style: GoogleFonts.readexPro(
+  //               //           textStyle: TextStyle(
+  //               //             fontSize: isMobile ? 14 : 16,
+  //               //             color: Colors.white,
+  //               //           ),
+  //               //         ),
+  //               //       ),
+  //               //       Icon(
+  //               //         Icons.arrow_forward,
+  //               //         color: Colors.white,
+  //               //         size: isMobile ? 16 : 20,
+  //               //       ),
+  //               //     ],
+  //               //   ),
+  //               // ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Widget _buildProjectCard(Map<String, String> project, bool isMobile) {
   //   final cardTextColor = _isDarkMode ? Colors.white : Colors.black87;
