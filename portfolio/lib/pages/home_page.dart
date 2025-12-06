@@ -1,858 +1,742 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:portfolio/widgets/on_hover_button.dart';
+import 'package:portfolio/data/projects.dart';
+import 'package:portfolio/widgets/my_nav_button.dart';
 import 'package:portfolio/widgets/on_hover_container.dart';
-import 'package:portfolio/widgets/on_hover_text.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PortfolioHomePage extends StatefulWidget {
   const PortfolioHomePage({super.key});
+
+  get onPressed => null;
 
   @override
   State<PortfolioHomePage> createState() => _PortfolioHomePageState();
 }
 
 class _PortfolioHomePageState extends State<PortfolioHomePage> {
-  final _scrollController = ScrollController();
-  final _aboutKey = GlobalKey();
-  final _skillsKey = GlobalKey();
-  final _projectsKey = GlobalKey();
-  final _contactKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _aboutKey = GlobalKey();
+  final GlobalKey _projectsKey = GlobalKey();
+  final GlobalKey _contactKey = GlobalKey();
+  final GlobalKey _skillsKey = GlobalKey();
+  bool _isPressed = false;
+  bool _isHovered = false;
+  int _isActiveIndex = -1; // -1 = none active
+  final Color textColor = Colors.black;
 
-  bool _isDarkMode = true;
-
-  //Handle theme toggle
-  void _toggleTheme() {
-    setState(() {
-      _isDarkMode = !_isDarkMode;
-    });
-  }
-
-  // Scroll to section
-  void _scrollTo(GlobalKey key) {
+  void _scrollToSection(GlobalKey key) {
     final context = key.currentContext;
     if (context != null) {
       Scrollable.ensureVisible(
         context,
-        duration: const Duration(seconds: 1),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     }
   }
 
+  void setPressed(bool pressed) {
+    setState(() {
+      _isPressed = pressed;
+    });
+  }
+
+  void onEntered(bool isHovered) {
+    setState(() {
+      _isHovered = isHovered;
+    });
+  }
+
+  void onSkillEntered(int index) {
+    setState(() {
+      _isActiveIndex = index;
+      _isHovered = index != -1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bgColor = _isDarkMode ? Colors.black : Colors.white;
-    final appBarTextColor = _isDarkMode ? Colors.white : Colors.black;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final screenWidth = constraints.maxWidth;
+        final double screenWidth = constraints.maxWidth;
+        final bgColor = Colors.white;
+
+        // Responsive helpers
+        final bool isMobile = screenWidth < 600;
+        final bool isTablet = screenWidth >= 600 && screenWidth < 900;
+        final bool isLaptop = screenWidth >= 900 && screenWidth < 1400;
+        final bool isDesktop = screenWidth >= 1400;
+
+        // Projects grid columns
+        int projectsColumns;
+        if (isDesktop) {
+          projectsColumns = 4;
+        } else if (isLaptop) {
+          projectsColumns = 2; // laptop shows 2 columns as requested
+        } else if (isTablet) {
+          projectsColumns = 2;
+        } else {
+          projectsColumns = 1;
+        }
+
         return Scaffold(
           backgroundColor: bgColor,
-          appBar: AppBar(
-            backgroundColor: bgColor,
-            elevation: 0,
-            title: Text(
-              'Alban Jaures',
-              style: GoogleFonts.readexPro(
-                textStyle: TextStyle(
-                  fontSize: screenWidth < 600 ? 22 : 30,
-                  fontWeight: FontWeight.bold,
-                  color: appBarTextColor,
-                ),
-              ),
-            ),
-            actions: [
-              _navButton('About', _aboutKey, screenWidth),
-              _navButton('Skills', _skillsKey, screenWidth),
-              _navButton('Projects', _projectsKey, screenWidth),
-              _navButton('Contact', _contactKey, screenWidth),
-              IconButton(
-                icon: Icon(
-                  _isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
-                  color: appBarTextColor,
-                ),
-                tooltip: 'Toggle Theme',
-                onPressed: _toggleTheme,
-              ),
-            ],
-          ),
-          body: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              children: [
-                _buildHeaderSection(screenWidth),
-                _buildAboutMeSection(key: _aboutKey, screenWidth: screenWidth),
-                _buildSkillsSection(key: _skillsKey, screenWidth: screenWidth),
-                SizedBox(
-                  width: double.infinity,
-                  child: _buildProjectsSection(
-                    key: _projectsKey,
-                    screenWidth: screenWidth,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  // Top bar
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 16.0 : 40.0,
+                      vertical: isMobile ? 12.0 : 20.0,
+                    ),
+                    color: bgColor,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Alban Jaures',
+                          style: GoogleFonts.readexPro(
+                            fontSize: isMobile ? 20 : 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        // nav buttons: wrap when small
+                        Flexible(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Wrap(
+                              spacing: isMobile ? 8.0 : 20.0,
+                              runSpacing: 8.0,
+                              children: [
+                                MyNavButton(
+                                  child: Text(
+                                    'About',
+                                    style: GoogleFonts.readexPro(
+                                      textStyle: TextStyle(
+                                        color: _isPressed
+                                            ? Colors.black
+                                            : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () => _scrollToSection(_aboutKey),
+                                ),
+                                MyNavButton(
+                                  child: Text(
+                                    'Projects',
+                                    style: GoogleFonts.readexPro(
+                                      textStyle: TextStyle(
+                                        color: _isPressed
+                                            ? Colors.black
+                                            : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () =>
+                                      _scrollToSection(_projectsKey),
+                                ),
+                                MyNavButton(
+                                  child: Text(
+                                    'Skills',
+                                    style: GoogleFonts.readexPro(
+                                      textStyle: TextStyle(
+                                        color: _isPressed
+                                            ? Colors.black
+                                            : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () => _scrollToSection(_skillsKey),
+                                ),
+                                MyNavButton(
+                                  child: Text(
+                                    'Contact',
+                                    style: GoogleFonts.readexPro(
+                                      textStyle: TextStyle(
+                                        color: _isPressed
+                                            ? Colors.black
+                                            : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () =>
+                                      _scrollToSection(_contactKey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                _buildContactSection(
-                  key: _contactKey,
-                  screenWidth: screenWidth,
-                ),
-                _buildFooter(screenWidth),
-              ],
+
+                  const SizedBox(height: 24),
+
+                  // Header / hero - responsive width and padding
+                  Container(
+                    height: isMobile ? null : 400,
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 16.0 : 40.0,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      vertical: isMobile ? 24.0 : 40.0,
+                      horizontal: isMobile ? 16.0 : 24.0,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 23, 163, 77),
+                          Color.fromARGB(255, 121, 160, 179),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: isMobile
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CircleAvatar(
+                                radius: 56,
+                                backgroundImage: AssetImage('assets/mypic.jpg'),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Alban Jaures',
+                                style: GoogleFonts.readexPro(
+                                  textStyle: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Software Engineer • Flutter Developer',
+                                style: GoogleFonts.readexPro(
+                                  textStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: isTablet ? 64 : 80,
+                                backgroundImage: AssetImage('assets/mypic.jpg'),
+                              ),
+                              const SizedBox(width: 24),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Alban Jaures',
+                                      style: GoogleFonts.readexPro(
+                                        textStyle: TextStyle(
+                                          fontSize: isLaptop ? 26 : 30,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          'Software Engineer',
+                                          style: GoogleFonts.readexPro(
+                                            textStyle: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Flutter Developer',
+                                          style: GoogleFonts.readexPro(
+                                            textStyle: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Certified Backend Developer',
+                                          style: GoogleFonts.readexPro(
+                                            textStyle: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  // About
+                  Container(
+                    key: _aboutKey,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 16.0 : 40.0,
+                      vertical: isMobile ? 16.0 : 24.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'About Me',
+                          style: GoogleFonts.readexPro(
+                            textStyle: TextStyle(
+                              fontSize: isMobile ? 22 : 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[900],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: EdgeInsets.only(right: isMobile ? 0 : 120.0),
+                          child: Text(
+                            'Software developer passionate about new technologies. I am specialize in building robust and scalable applications as a full-stack software engineer. My expertise lies in backend development using Python and Node.js, where I design and implement APIs, manage databases, and ensure system performance. On the frontend, I use Flutter to create beautiful and responsive user interfaces that deliver a seamless experience across multiple platforms.\n\nI am committed to writing clean, maintainable code and continuously improving my skills to stay updated with the latest industry trends. Let\'s connect and create something amazing together!',
+                            style: GoogleFonts.aleo(
+                              textStyle: TextStyle(
+                                fontSize: isMobile ? 14 : 18,
+                                height: 1.5,
+                                color: textColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Projects - responsive grid (shrink-wrapped so page scrolls naturally)
+                  Container(
+                    key: _projectsKey,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 16.0 : 40.0,
+                      vertical: isMobile ? 20.0 : 40.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Projects',
+                          style: GoogleFonts.readexPro(
+                            textStyle: TextStyle(
+                              fontSize: isMobile ? 22 : 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[900],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: projectList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: projectsColumns,
+                                crossAxisSpacing: isMobile ? 12 : 24,
+                                mainAxisSpacing: isMobile ? 12 : 24,
+                                childAspectRatio: isMobile ? 1.1 : 1.8,
+                              ),
+                          itemBuilder: (context, index) {
+                            return OnHoverContainer(
+                              child: Padding(
+                                padding: EdgeInsets.all(isMobile ? 12.0 : 20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      projectList[index].title,
+                                      style: GoogleFonts.readexPro(
+                                        textStyle: TextStyle(
+                                          fontSize: isMobile ? 16 : 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Expanded(
+                                      child: Text(
+                                        projectList[index].description,
+                                        style: GoogleFonts.aleo(
+                                          textStyle: TextStyle(
+                                            fontSize: isMobile ? 12 : 16,
+                                            height: 1.5,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Learn More',
+                                      style: GoogleFonts.readexPro(
+                                        textStyle: TextStyle(
+                                          fontSize: isMobile ? 12 : 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Skills - responsive layout; when hovered highlight one and dim others
+                  Container(
+                    key: _skillsKey,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 16.0 : 40.0,
+                      vertical: isMobile ? 16.0 : 24.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Skills',
+                          style: GoogleFonts.readexPro(
+                            textStyle: TextStyle(
+                              fontSize: isMobile ? 22 : 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[900],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // On small screens use Wrap (stacked), otherwise a row of cards
+                        isMobile
+                            ? Wrap(
+                                spacing: 12,
+                                runSpacing: 12,
+                                children: List.generate(4, (i) {
+                                  final bool isActive = _isActiveIndex == i;
+                                  final bool anyHovered = _isActiveIndex != -1;
+                                  // Titles for the skill containers
+                                  final titles = [
+                                    'Programming Languages',
+                                    'Frameworks',
+                                    'Databases',
+                                    'Agiles Methodologies',
+                                  ];
+                                  return MouseRegion(
+                                    onEnter: (_) => onSkillEntered(i),
+                                    onExit: (_) => onSkillEntered(-1),
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      width: (screenWidth - 48) / 2,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: isActive
+                                              ? const [
+                                                  Color.fromARGB(
+                                                    255,
+                                                    236,
+                                                    232,
+                                                    232,
+                                                  ),
+                                                  Color.fromARGB(
+                                                    255,
+                                                    184,
+                                                    185,
+                                                    187,
+                                                  ),
+                                                ]
+                                              : anyHovered
+                                              ? [
+                                                  Colors.grey.shade200,
+                                                  Colors.grey.shade300,
+                                                ]
+                                              : const [
+                                                  Color.fromARGB(
+                                                    255,
+                                                    236,
+                                                    232,
+                                                    232,
+                                                  ),
+                                                  Color.fromARGB(
+                                                    255,
+                                                    184,
+                                                    185,
+                                                    187,
+                                                  ),
+                                                ],
+                                        ),
+                                        boxShadow: isActive
+                                            ? [
+                                                BoxShadow(
+                                                  color: const Color.fromARGB(
+                                                    255,
+                                                    136,
+                                                    6,
+                                                    148,
+                                                  ).withOpacity(0.9),
+                                                  spreadRadius: 3,
+                                                  blurRadius: 10,
+                                                  offset: const Offset(0, 4),
+                                                ),
+                                              ]
+                                            : anyHovered
+                                            ? [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  spreadRadius: 1,
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ]
+                                            : [
+                                                BoxShadow(
+                                                  color: Colors.deepPurpleAccent
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 1,
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                      ),
+                                      height: 180,
+                                      // Add the title into the container
+                                      child: Center(
+                                        child: Text(
+                                          titles[i],
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.readexPro(
+                                            textStyle: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: isActive
+                                                  ? Colors.deepPurple
+                                                  : Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(4, (i) {
+                                  final bool isActive = _isActiveIndex == i;
+                                  final bool anyHovered = _isActiveIndex != -1;
+                                  return Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: isLaptop ? 8.0 : 12.0,
+                                      ),
+                                      child: MouseRegion(
+                                        onEnter: (_) => onSkillEntered(i),
+                                        onExit: (_) => onSkillEntered(-1),
+                                        child: AnimatedContainer(
+                                          duration: const Duration(
+                                            milliseconds: 200,
+                                          ),
+                                          height: isMobile ? 160 : 360,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              20.0,
+                                            ),
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: isActive
+                                                  ? const [
+                                                      Color.fromARGB(
+                                                        255,
+                                                        236,
+                                                        232,
+                                                        232,
+                                                      ),
+                                                      Color.fromARGB(
+                                                        255,
+                                                        184,
+                                                        185,
+                                                        187,
+                                                      ),
+                                                    ]
+                                                  : anyHovered
+                                                  ? [
+                                                      Colors.grey.shade200,
+                                                      Colors.grey.shade300,
+                                                    ]
+                                                  : const [
+                                                      Color.fromARGB(
+                                                        255,
+                                                        236,
+                                                        232,
+                                                        232,
+                                                      ),
+                                                      Color.fromARGB(
+                                                        255,
+                                                        184,
+                                                        185,
+                                                        187,
+                                                      ),
+                                                    ],
+                                            ),
+                                            boxShadow: isActive
+                                                ? [
+                                                    BoxShadow(
+                                                      color:
+                                                          const Color.fromARGB(
+                                                            255,
+                                                            136,
+                                                            6,
+                                                            148,
+                                                          ).withOpacity(0.9),
+                                                      spreadRadius: 5,
+                                                      blurRadius: 12,
+                                                      offset: const Offset(
+                                                        0,
+                                                        6,
+                                                      ),
+                                                    ),
+                                                  ]
+                                                : anyHovered
+                                                ? [
+                                                    BoxShadow(
+                                                      color: Colors.black12,
+                                                      spreadRadius: 1,
+                                                      blurRadius: 6,
+                                                      offset: const Offset(
+                                                        0,
+                                                        2,
+                                                      ),
+                                                    ),
+                                                  ]
+                                                : [
+                                                    BoxShadow(
+                                                      color: Colors
+                                                          .deepPurpleAccent
+                                                          .withOpacity(0.2),
+                                                      spreadRadius: 1,
+                                                      blurRadius: 6,
+                                                      offset: const Offset(
+                                                        0,
+                                                        3,
+                                                      ),
+                                                    ),
+                                                  ],
+                                          ),
+                                          // Add title into desktop container
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: isMobile ? 10 : 20,
+                                                ),
+                                                Text(
+                                                  i == 0
+                                                      ? 'Programming Languages'
+                                                      : i == 1
+                                                      ? 'Frameworks'
+                                                      : i == 2
+                                                      ? 'Databases'
+                                                      : 'Agiles Methodologies',
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.readexPro(
+                                                    textStyle: TextStyle(
+                                                      fontSize: isLaptop
+                                                          ? 18
+                                                          : 22,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: isActive
+                                                          ? Colors.deepPurple
+                                                          : Colors.black87,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Column(children: []),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // Contact + footer
+                  Container(
+                    key: _contactKey,
+                    height: 200,
+                    color: Colors.black,
+                    child: const Center(
+                      child: Text(
+                        'Contact area',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    color: const Color.fromARGB(255, 71, 13, 82),
+                    child: const Center(
+                      child: Text(
+                        'Copyright © 2025 Alban Jaures. All rights reserved.',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _navButton(String title, GlobalKey key, double screenWidth) {
-    return TextButton(
-      onPressed: () => _scrollTo(key),
-      child: OnHoverText(
-        builder: (bool isHovered) {
-          final color = isHovered ? Colors.white : Colors.deepPurpleAccent;
-          return Text(
-            title,
-            style: GoogleFonts.readexPro(
-              textStyle: TextStyle(
-                fontSize: screenWidth < 600 ? 13 : 15,
-                color: color,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildHeaderSection(double screenWidth) {
-    final headerBgColor = _isDarkMode
-        ? Colors.deepPurple.shade900.withValues()
-        : Colors.blue.shade100.withValues();
-    final nameTextColor = _isDarkMode ? Colors.white70 : Colors.black;
-    final subtitleTextColor = _isDarkMode ? Colors.white70 : Colors.black87;
-    final isMobile = screenWidth < 600;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          height: isMobile ? 300 : 450,
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(
-            vertical: isMobile ? 40.0 : 80.0,
-            horizontal: isMobile ? 16.0 : 40.0,
-          ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                headerBgColor,
-                const Color.fromARGB(255, 26, 11, 66).withAlpha(100),
-              ],
-            ),
-          ),
-          child: isMobile
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: AssetImage('assests/mypic.jpg'),
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Alban Jaures',
-                        style: GoogleFonts.readexPro(
-                          textStyle: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: nameTextColor,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Software Engineer & Mobile App Developer',
-                        style: GoogleFonts.alata(
-                          textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: subtitleTextColor,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'Certified Backend Developer',
-                        style: GoogleFonts.alata(
-                          textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: subtitleTextColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 80,
-                      backgroundImage: AssetImage('assets/mypic.jpg'),
-                    ),
-                    SizedBox(width: 40),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Alban Jaures',
-                            style: GoogleFonts.readexPro(
-                              textStyle: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: nameTextColor,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Software Engineer & Flutter Developer',
-                            style: GoogleFonts.alata(
-                              textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: subtitleTextColor,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'Certified Backend Developer',
-                            style: GoogleFonts.alata(
-                              textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: subtitleTextColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAboutMeSection({
-    required GlobalKey key,
-    required double screenWidth,
-  }) {
-    final titleColor = _isDarkMode
-        ? Colors.deepPurpleAccent
-        : Colors.deepPurple;
-    final textColor = _isDarkMode ? Colors.white : Colors.black87;
-    final isMobile = screenWidth < 600;
-    return Padding(
-      key: key,
-      padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 30.0 : 60.0,
-        horizontal: isMobile ? 16.0 : 40.0,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'About Me',
-            style: GoogleFonts.readexPro(
-              textStyle: TextStyle(
-                fontSize: isMobile ? 24 : 36,
-                color: titleColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SizedBox(height: isMobile ? 10 : 20),
-          Text(
-            'Software developer passionate about new technologies. I am specialize in building robust and scalable applications as a full-stack software engineer. My expertise lies in backend development using Python and Node.js, where I design and implement APIs, manage databases, and ensure system performance.  On the frontend, I use Flutter to create beautiful and responsive user interfaces that deliver a seamless experience across multiple platforms.',
-            style: GoogleFonts.aleo(
-              textStyle: TextStyle(
-                fontSize: isMobile ? 14 : 18,
-                color: textColor,
-                height: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSkillsSection({
-    required GlobalKey key,
-    required double screenWidth,
-  }) {
-    final skills = [
-      'Flutter',
-      'Dart',
-      'Node.js',
-      'Python',
-      'C',
-      'Firebase',
-      'MongoDB',
-      'REST APIs',
-      'SQL',
-      'GitHub',
-      'Agile Methodologies',
-      'NoSQL',
-      'Bash',
-    ];
-    final skillsBgColor = _isDarkMode
-        ? Colors.deepPurple.shade900.withValues()
-        : Colors.blue.shade100.withValues();
-    final titleColor = _isDarkMode
-        ? Colors.deepPurpleAccent
-        : Colors.deepPurple;
-    final isMobile = screenWidth < 600;
-    return Container(
-      key: key,
-      width: double.infinity,
-      color: skillsBgColor,
-      padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 30.0 : 60.0,
-        horizontal: isMobile ? 16.0 : 40.0,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Skills',
-            style: GoogleFonts.readexPro(
-              textStyle: TextStyle(
-                fontSize: isMobile ? 24 : 36,
-                color: titleColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SizedBox(height: isMobile ? 10 : 20),
-          Wrap(
-            spacing: isMobile ? 6.0 : 10.0,
-            runSpacing: isMobile ? 6.0 : 10.0,
-            children: skills
-                .map((skill) => _buildSkillTag(skill, isMobile))
-                .toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSkillTag(String skill, bool isMobile) {
-    final chipBgColor = _isDarkMode
-        ? Colors.blue.shade100
-        : Colors.blue.shade700;
-    final chipTextColor = _isDarkMode ? Colors.black : Colors.white;
-    return Chip(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      label: Text(skill),
-      backgroundColor: chipBgColor,
-      labelStyle: TextStyle(
-        color: chipTextColor,
-        fontWeight: FontWeight.bold,
-        fontSize: isMobile ? 12 : 14,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 8 : 12,
-        vertical: isMobile ? 6 : 8,
-      ),
-    );
-  }
-
-  Widget _buildProjectsSection({
-    required GlobalKey key,
-    required double screenWidth,
-  }) {
-    final projects = [
-      {
-        'name': 'Simple Shell',
-        'description':
-            'A minimalist UNIX command language interpreter build in C language designed to read and execute commands from both files and standard input.',
-        'link': 'https://github.com/DTAJ095/simple_shell',
-      },
-      {
-        'name': 'Personal Financial Tracker',
-        'description':
-            'A mobile application build with Flutter for the frontend and Django for the backend designed to help user to track their different expenses.',
-        'image': 'assets/images/1.png',
-        'link': 'https://github.com/Romeo509/Personal_Financial_Tracker',
-      },
-      {
-        'name': 'AfricaStay',
-        'description':
-            "AfricaStay is a travel booking platform designed specifically for exploring and booking accommodations, flights, and other travel services across Africa.",
-        'link': 'https://github.com/DTAJ095/mvp_repo/tree/main/AfricaStay',
-      },
-      {
-        'name': 'Portfolio Website',
-        'description':
-            'This is the website showcasing skills and projects. Built with Flutter!',
-        'link': 'https://github.com/DTAJ095/portfolio-project',
-      },
-    ];
-
-    final titleColor = _isDarkMode
-        ? Colors.deepPurpleAccent
-        : Colors.deepPurple;
-    final isMobile = screenWidth < 600;
-    int crossAxisCount;
-    if (screenWidth >= 1400) {
-      crossAxisCount = 2;
-    } else if (screenWidth >= 900) {
-      crossAxisCount = 1;
-    } else {
-      crossAxisCount = 1;
-    }
-    final childAspectRatio = isMobile ? 2.2 : 3.5;
-    return Padding(
-      key: key,
-      padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 60.0 : 80.0,
-        horizontal: isMobile ? 16.0 : 40.0,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Projects',
-            style: GoogleFonts.readexPro(
-              textStyle: TextStyle(
-                fontSize: isMobile ? 24 : 36,
-                color: titleColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SizedBox(height: isMobile ? 10 : 20),
-          // SizedBox(
-          //   width: 1700.0,
-          //   child: ListView.separated(
-          //     shrinkWrap: true,
-          //     physics: NeverScrollableScrollPhysics(),
-          //     scrollDirection: Axis.vertical,
-          //     itemCount: projects.length,
-          //     itemBuilder: (context, index) {
-          //       return Padding(
-          //         padding: const EdgeInsets.only(bottom: 12.0),
-          //         child: _buildProjectContainer(projects[index], isMobile),
-          //       );
-          //     },
-          //     separatorBuilder: (BuildContext context, int index) {
-          //       return SizedBox(height: isMobile ? 20 : 30);
-          //     },
-          //   ),
-          // ),
-          SizedBox(
-            height: isMobile ? 600 : 800,
-            child: GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: isMobile ? 10.0 : 50.0,
-                mainAxisSpacing: isMobile ? 10.0 : 50.0,
-                childAspectRatio: childAspectRatio,
-              ),
-              itemCount: projects.length,
-              itemBuilder: (context, index) {
-                return _buildProjectContainer(projects[index], isMobile);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProjectContainer(Map<String, String> project, bool isMobile) {
-    return OnHoverContainer(
-      child: Padding(
-        padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              project['name'] ?? 'Project Name',
-              style: GoogleFonts.readexPro(
-                textStyle: TextStyle(
-                  fontSize: isMobile ? 20 : 24,
-                  fontWeight: FontWeight.bold,
-                  color: _isDarkMode ? Colors.white : Colors.white70,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                project['description'] ?? 'Project Description',
-                style: GoogleFonts.aleo(
-                  textStyle: TextStyle(
-                    fontSize: isMobile ? 14 : 16,
-                    color: _isDarkMode ? Colors.white70 : Colors.white70,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ),
-            Spacer(),
-            OnHoverButton(
-              child: Container(
-                width: isMobile ? 100.0 : 120.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: MaterialButton(
-                  onPressed: () {
-                    if (project['link'] != null) {
-                      _launchURL(project['link']!);
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Text(
-                        'View Project',
-                        style: GoogleFonts.aBeeZee(
-                          textStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: _isDarkMode
-                                ? Colors.amberAccent
-                                : Colors.black,
-                          ),
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward_sharp,
-                        color: _isDarkMode ? Colors.amberAccent : Colors.black,
-                        size: 15.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Widget _buildProjectContainer(Map<String, String> project, bool isMobile) {
-  //   final textColor = _isDarkMode ? Colors.white : Colors.black87;
-  //   final desColor = _isDarkMode ? Colors.white70 : Colors.black54;
-  //   final backgroundColor = _isDarkMode
-  //       ? const Color.fromARGB(255, 77, 30, 158)
-  //       : Colors.blue.shade100;
-  //   return OnHoverContainer(
-  //     child: Card(
-  //       //color: backgroundColor,
-  //       //surfaceTintColor: Color.fromARGB(255, 185, 165, 157),
-  //       elevation: 10,
-  //       child: Container(
-  //         height: 450,
-  //         decoration: BoxDecoration(
-  //           gradient: LinearGradient(
-  //             begin: AlignmentGeometry.topLeft,
-  //             end: AlignmentGeometry.bottomRight,
-  //             colors: [backgroundColor, Color.fromARGB(250, 70, 50, 40)],
-  //           ),
-  //         ),
-  //         child: Padding(
-  //           padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 project['name'] ?? 'Project Name',
-  //                 style: GoogleFonts.readexPro(
-  //                   textStyle: TextStyle(
-  //                     fontSize: isMobile ? 20 : 24,
-  //                     fontWeight: FontWeight.bold,
-  //                     color: textColor,
-  //                   ),
-  //                 ),
-  //               ),
-  //               SizedBox(height: isMobile ? 8 : 12),
-  //               Expanded(
-  //                 child: Text(
-  //                   project['description'] ?? 'Project Description',
-  //                   style: GoogleFonts.aleo(
-  //                     textStyle: TextStyle(
-  //                       fontSize: isMobile ? 14 : 16,
-  //                       color: desColor,
-  //                       height: 1.5,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               Spacer(),
-  //               OnHoverButton(
-  //                 child: Container(
-  //                   decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(20),
-  //                   ),
-  //                   width: isMobile ? 100.0 : 120.0,
-  //                   child: MaterialButton(
-  //                     onPressed: () {
-  //                       if (project['link'] != null) {
-  //                         _launchURL(project['link']!);
-  //                       }
-  //                     },
-  //                     child: Row(
-  //                       children: [
-  //                         Text(
-  //                           'View Project',
-  //                           style: GoogleFonts.aBeeZee(
-  //                             textStyle: TextStyle(
-  //                               fontSize: 15,
-  //                               fontWeight: FontWeight.bold,
-  //                               color: _isDarkMode
-  //                                   ? Colors.amberAccent
-  //                                   : Colors.black,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                         Icon(
-  //                           Icons.arrow_forward_sharp,
-  //                           color: _isDarkMode
-  //                               ? Colors.amberAccent
-  //                               : Colors.black,
-  //                           size: 15.0,
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               // InkWell(
-  //               //   onHover: (value) => _isHovering(),
-  //               //   highlightColor: _isDarkMode
-  //               //       ? Colors.deepPurpleAccent.withAlpha(30)
-  //               //       : Colors.deepPurple.withAlpha(30),
-  //               //   customBorder: RoundedRectangleBorder(
-  //               //     borderRadius: BorderRadius.circular(8),
-  //               //   ),
-  //               //   borderRadius: BorderRadius.circular(8),
-  //               //   onTap: () => {
-  //               //     if (project['link'] != null) {_launchURL(project['link']!)},
-  //               //   },
-  //               //   child: Row(
-  //               //     children: [
-  //               //       Text(
-  //               //         'View Project',
-  //               //         style: GoogleFonts.readexPro(
-  //               //           textStyle: TextStyle(
-  //               //             fontSize: isMobile ? 14 : 16,
-  //               //             color: Colors.white,
-  //               //           ),
-  //               //         ),
-  //               //       ),
-  //               //       Icon(
-  //               //         Icons.arrow_forward,
-  //               //         color: Colors.white,
-  //               //         size: isMobile ? 16 : 20,
-  //               //       ),
-  //               //     ],
-  //               //   ),
-  //               // ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildProjectCard(Map<String, String> project, bool isMobile) {
-  //   final cardTextColor = _isDarkMode ? Colors.white : Colors.black87;
-  //   final cardDescColor = _isDarkMode ? Colors.white70 : Colors.black54;
-  //   final cardBgColor = _isDarkMode
-  //       ? Colors.deepPurple.shade900
-  //       : Colors.blue.shade100;
-  //   return StatefulBuilder(
-  //     builder: (context, setState) {
-  //       return InkWell(
-  //         onTap: () {
-  //           if (project['link'] != null) {
-  //             _launchURL(project['link']!);
-  //           }
-  //         },
-  //         onHover: (value) => setState(() {}),
-  //         child: AnimatedContainer(
-  //           duration: Duration(milliseconds: 300),
-  //           curve: Curves.easeInOut,
-  //           decoration: BoxDecoration(
-  //             color: cardBgColor,
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           child: Padding(
-  //             padding: EdgeInsets.all(isMobile ? 12.0 : 20.0),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   project['name'] ?? 'Project Name',
-  //                   style: GoogleFonts.readexPro(
-  //                     textStyle: TextStyle(
-  //                       fontSize: isMobile ? 16 : 20,
-  //                       fontWeight: FontWeight.bold,
-  //                       color: cardTextColor,
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: isMobile ? 6 : 10),
-  //                 Expanded(
-  //                   child: Text(
-  //                     project['description'] ?? 'Project Description',
-  //                     style: GoogleFonts.aleo(
-  //                       textStyle: TextStyle(
-  //                         fontSize: isMobile ? 12 : 14,
-  //                         color: cardDescColor,
-  //                         height: 1.4,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-  void _launchURL(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      // You can show a SnackBar or an alert dialog here
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Could not launch $url')));
-    }
-  }
-
-  Widget _buildContactSection({
-    required GlobalKey key,
-    required double screenWidth,
-  }) {
-    final contactBgColor = _isDarkMode
-        ? const Color.fromARGB(255, 23, 2, 27).withValues()
-        : Colors.blue.shade100.withValues();
-    final titleColor = _isDarkMode
-        ? Colors.deepPurpleAccent
-        : Colors.deepPurple;
-    final textColor = _isDarkMode ? Colors.white70 : Colors.black87;
-    final iconColor = _isDarkMode ? Colors.white : Colors.deepPurple;
-    final isMobile = screenWidth < 600;
-    return Container(
-      key: key,
-      width: double.infinity,
-      color: contactBgColor,
-      padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 30.0 : 60.0,
-        horizontal: isMobile ? 16.0 : 40.0,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Contact Me',
-            style: GoogleFonts.readexPro(
-              textStyle: TextStyle(
-                fontSize: isMobile ? 24 : 36,
-                color: titleColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          SizedBox(height: isMobile ? 10 : 20),
-          Text(
-            'Feel free to get in touch! I am always open to discussing new projects, creative ideas, or opportunities to be part of your visions.',
-            style: GoogleFonts.aleo(
-              textStyle: TextStyle(
-                fontSize: isMobile ? 12 : 16,
-                color: textColor,
-                height: 1.5,
-              ),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: isMobile ? 20 : 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.google,
-                  color: iconColor,
-                  size: isMobile ? 28 : 36,
-                ),
-                onPressed: () => _launchURL('mailto:albanjaures26@gmail.com'),
-              ),
-              SizedBox(width: isMobile ? 10 : 20),
-              IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.linkedin,
-                  color: iconColor,
-                  size: isMobile ? 28 : 36,
-                ),
-                onPressed: () =>
-                    _launchURL('https://www.linkedin.com/in/alban-jaures'),
-              ),
-              SizedBox(width: isMobile ? 10 : 20),
-              IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.github,
-                  color: iconColor,
-                  size: isMobile ? 28 : 36,
-                ),
-                onPressed: () => _launchURL('https://github.com/DTAJ095'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFooter(double screenWidth) {
-    final footerBgColor = _isDarkMode
-        ? Colors.blue.shade800
-        : Colors.blue.shade200;
-    final footerTextColor = _isDarkMode ? Colors.white54 : Colors.black54;
-    final isMobile = screenWidth < 600;
-    return Container(
-      width: double.infinity,
-      color: footerBgColor,
-      padding: EdgeInsets.all(isMobile ? 10.0 : 20.0),
-      child: Text(
-        '© 2025 Alban Jaures. All Rights Reserved.',
-        style: TextStyle(
-          color: footerTextColor,
-          fontSize: isMobile ? 8.0 : 10.0,
-        ),
-        textAlign: TextAlign.center,
-      ),
     );
   }
 }

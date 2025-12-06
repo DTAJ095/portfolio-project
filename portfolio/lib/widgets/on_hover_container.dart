@@ -23,7 +23,6 @@ class _OnHoverContainerState extends State<OnHoverContainer> {
       onEnter: (event) => onEntered(true),
       onExit: (event) => onEntered(false),
       child: AnimatedContainer(
-        height: 1500,
         duration: Duration(milliseconds: 200),
         decoration: BoxDecoration(
           gradient: _isHovered
