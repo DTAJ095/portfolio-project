@@ -1,33 +1,51 @@
-class Skills {
-  final String skillTitle;
-  final String skillIcon;
-  final List skillList;
-  Skills({
-    required this.skillTitle,
-    required this.skillIcon,
-    required this.skillList,
-  });
+class Skill {
+  final String name;
+  final String iconPath;
+
+  Skill({required this.name, required this.iconPath});
 }
 
-final List<Skills> skillsList = [
-  Skills(
-    skillTitle: 'Programming Languages',
-    skillIcon: 'assets/icons/programming.png',
-    skillList: ['Dart', 'JavaScript', 'Python', 'Java', 'C++'],
+class SkillsList {
+  final String category;
+  final List<Skill> skills;
+  SkillsList({required this.category, required this.skills});
+}
+
+final List<SkillsList> skillsData = [
+  SkillsList(
+    category: 'Programming Languages',
+    skills: [
+      Skill(name: 'Dart', iconPath: ''),
+      Skill(name: 'JavaScript', iconPath: ''),
+      Skill(name: 'Python', iconPath: ''),
+      Skill(name: 'C++', iconPath: ''),
+    ],
   ),
-  Skills(
-    skillTitle: 'Frameworks & Libraries',
-    skillIcon: 'assets/icons/frameworks.png',
-    skillList: ['Flutter', 'React', 'Node.js', 'Express.js', 'TensorFlow'],
+  SkillsList(
+    category: 'Frameworks & Libraries',
+    skills: [
+      Skill(name: 'Flutter', iconPath: ''),
+      Skill(name: 'React', iconPath: ''),
+      Skill(name: 'Node.js', iconPath: ''),
+      Skill(name: 'TensorFlow', iconPath: ''),
+    ],
   ),
-  Skills(
-    skillTitle: 'Databases & Tools',
-    skillIcon: 'assets/icons/tools.png',
-    skillList: ['Git & GitHub', 'Firebase', 'Docker', 'VS Code', 'JIRA'],
+  SkillsList(
+    category: 'Tools & Platforms',
+    skills: [
+      Skill(name: 'Git', iconPath: ''),
+      Skill(name: 'Docker', iconPath: ''),
+      Skill(name: 'Firebase', iconPath: ''),
+      Skill(name: 'AWS', iconPath: ''),
+    ],
   ),
-  Skills(
-    skillTitle: 'Agiles Methodologies',
-    skillIcon: '',
-    skillList: ['Scrum', 'Kanban'],
+  SkillsList(
+    category: 'Methodologies',
+    skills: [
+      Skill(name: 'Agile', iconPath: ''),
+      Skill(name: 'Scrum', iconPath: ''),
+      Skill(name: 'Test-Driven Development', iconPath: ''),
+      Skill(name: 'CI/CD', iconPath: ''),
+    ],
   ),
 ];

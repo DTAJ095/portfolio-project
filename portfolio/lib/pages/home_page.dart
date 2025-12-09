@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/data/projects.dart';
+import 'package:portfolio/data/skills.dart';
 import 'package:portfolio/widgets/my_nav_button.dart';
 import 'package:portfolio/widgets/on_hover_container.dart';
 
@@ -109,7 +110,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Wrap(
-                              spacing: isMobile ? 8.0 : 20.0,
+                              spacing: isMobile ? 6.0 : 20.0,
                               runSpacing: 8.0,
                               children: [
                                 MyNavButton(
@@ -120,6 +121,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
+                                        fontSize: isMobile ? 14 : 16,
                                       ),
                                     ),
                                   ),
@@ -133,6 +135,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
+                                        fontSize: isMobile ? 14 : 16,
                                       ),
                                     ),
                                   ),
@@ -147,6 +150,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
+                                        fontSize: isMobile ? 14 : 16,
                                       ),
                                     ),
                                   ),
@@ -160,6 +164,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
+                                        fontSize: isMobile ? 14 : 16,
                                       ),
                                     ),
                                   ),
@@ -199,8 +204,8 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: isMobile
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CircleAvatar(
                                 radius: 56,
@@ -672,28 +677,103 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                   height: isMobile ? 10 : 20,
                                                 ),
                                                 Text(
-                                                  i == 0
-                                                      ? 'Programming Languages'
-                                                      : i == 1
-                                                      ? 'Frameworks'
-                                                      : i == 2
-                                                      ? 'Databases'
-                                                      : 'Agiles Methodologies',
-                                                  textAlign: TextAlign.center,
+                                                  skillsData[i].category,
                                                   style: GoogleFonts.readexPro(
                                                     textStyle: TextStyle(
-                                                      fontSize: isLaptop
-                                                          ? 18
-                                                          : 22,
+                                                      fontSize: isMobile
+                                                          ? 16
+                                                          : 20,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                          FontWeight.w600,
                                                       color: isActive
                                                           ? Colors.deepPurple
                                                           : Colors.black87,
                                                     ),
                                                   ),
                                                 ),
-                                                Column(children: []),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    // Add skills details
+                                                    SizedBox(
+                                                      height: isMobile ? 8 : 16,
+                                                    ),
+                                                    ...skillsData[i].skills
+                                                        .map(
+                                                          (skill) => Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                  bottom:
+                                                                      isMobile
+                                                                      ? 4
+                                                                      : 8,
+                                                                ),
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        isMobile
+                                                                        ? 8.0
+                                                                        : 20.0,
+                                                                    vertical:
+                                                                        isMobile
+                                                                        ? 4.0
+                                                                        : 14.0,
+                                                                  ),
+                                                              child: Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .check_circle,
+                                                                    color:
+                                                                        isActive
+                                                                        ? Colors
+                                                                              .deepPurple
+                                                                        : Colors
+                                                                              .black54,
+                                                                    size:
+                                                                        isMobile
+                                                                        ? 14
+                                                                        : 18,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width:
+                                                                        isMobile
+                                                                        ? 6
+                                                                        : 12,
+                                                                  ),
+                                                                  Text(
+                                                                    skill.name,
+                                                                    style: GoogleFonts.aleo(
+                                                                      textStyle: TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                        fontSize:
+                                                                            isMobile
+                                                                            ? 12
+                                                                            : 16,
+                                                                        color:
+                                                                            isActive
+                                                                            ? Colors.black87
+                                                                            : Colors.black54,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                  ],
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -714,11 +794,13 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                     key: _contactKey,
                     height: 200,
                     color: Colors.black,
-                    child: const Center(
-                      child: Text(
-                        'Contact area',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Contact Me',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
