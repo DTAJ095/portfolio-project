@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/data/projects.dart';
 import 'package:portfolio/data/skills.dart';
 import 'package:portfolio/widgets/my_nav_button.dart';
 import 'package:portfolio/widgets/on_hover_container.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PortfolioHomePage extends StatefulWidget {
   const PortfolioHomePage({super.key});
@@ -20,6 +22,12 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
   final GlobalKey _projectsKey = GlobalKey();
   final GlobalKey _contactKey = GlobalKey();
   final GlobalKey _skillsKey = GlobalKey();
+  final String location = 'Biyem Assi, Yaounde, Cameroon';
+  final String email = 'albanjaures26@gmail.com';
+  final String phone = '+237 690 72 54 11';
+  final String githubUrl = '';
+  final String linkedinUrl = '';
+  final String twitterUrl = '';
   bool _isPressed = false;
   bool _isHovered = false;
   int _isActiveIndex = -1; // -1 = none active
@@ -454,12 +462,6 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                   final bool isActive = _isActiveIndex == i;
                                   final bool anyHovered = _isActiveIndex != -1;
                                   // Titles for the skill containers
-                                  final titles = [
-                                    'Programming Languages',
-                                    'Frameworks',
-                                    'Databases',
-                                    'Agiles Methodologies',
-                                  ];
                                   return MouseRegion(
                                     onEnter: (_) => onSkillEntered(i),
                                     onExit: (_) => onSkillEntered(-1),
@@ -543,22 +545,6 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                               ],
                                       ),
                                       height: 180,
-                                      // Add the title into the container
-                                      child: Center(
-                                        child: Text(
-                                          titles[i],
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.readexPro(
-                                            textStyle: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: isActive
-                                                  ? Colors.deepPurple
-                                                  : Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
                                     ),
                                   );
                                 }),
@@ -795,10 +781,82 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                     height: 200,
                     color: Colors.black,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Contact Me',
-                          style: TextStyle(color: Colors.white),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 16.0 : 40.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: isMobile ? 10 : 20),
+                              Text(
+                                'Address: $location',
+                                style: GoogleFonts.readexPro(
+                                  textStyle: TextStyle(
+                                    fontSize: isMobile ? 10 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: isMobile ? 8 : 16),
+                              Text(
+                                'Email: $email',
+                                style: GoogleFonts.readexPro(
+                                  textStyle: TextStyle(
+                                    fontSize: isMobile ? 10 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: isMobile ? 8 : 16),
+                              Text(
+                                'Phone: $phone',
+                                style: GoogleFonts.readexPro(
+                                  textStyle: TextStyle(
+                                    fontSize: isMobile ? 10 : 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () => _launchURL(githubUrl),
+                              icon: Icon(
+                                FontAwesomeIcons.github,
+                                color: Colors.white,
+                                size: isMobile ? 16 : 24,
+                              ),
+                            ),
+                            SizedBox(width: isMobile ? 16 : 32),
+                            IconButton(
+                              onPressed: () => _launchURL(linkedinUrl),
+                              icon: Icon(
+                                FontAwesomeIcons.linkedin,
+                                color: Colors.white,
+                                size: isMobile ? 16 : 24,
+                              ),
+                            ),
+                            SizedBox(width: isMobile ? 16 : 32),
+                            IconButton(
+                              onPressed: () => _launchURL(twitterUrl),
+                              icon: Icon(
+                                FontAwesomeIcons.twitter,
+                                color: Colors.white,
+                                size: isMobile ? 16 : 24,
+                              ),
+                            ),
+                            SizedBox(width: isMobile ? 16 : 32),
+                          ],
                         ),
                       ],
                     ),
@@ -820,5 +878,9 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
         );
       },
     );
+  }
+
+  void _launchURL(String url) {
+    launchUrl(Uri.parse(url));
   }
 }
