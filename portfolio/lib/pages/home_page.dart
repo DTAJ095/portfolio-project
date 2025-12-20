@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:portfolio/data/projects.dart';
 import 'package:portfolio/data/skills.dart';
+import 'package:portfolio/widgets/circle_loader.dart';
 import 'package:portfolio/widgets/my_nav_button.dart';
+import 'package:portfolio/widgets/on_hover_button.dart';
 import 'package:portfolio/widgets/on_hover_container.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -129,7 +132,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
-                                        fontSize: isMobile ? 14 : 16,
+                                        fontSize: isMobile ? 10 : 16,
                                       ),
                                     ),
                                   ),
@@ -143,7 +146,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
-                                        fontSize: isMobile ? 14 : 16,
+                                        fontSize: isMobile ? 10 : 16,
                                       ),
                                     ),
                                   ),
@@ -158,7 +161,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
-                                        fontSize: isMobile ? 14 : 16,
+                                        fontSize: isMobile ? 10 : 16,
                                       ),
                                     ),
                                   ),
@@ -172,7 +175,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         color: _isPressed
                                             ? Colors.black
                                             : Colors.white,
-                                        fontSize: isMobile ? 14 : 16,
+                                        fontSize: isMobile ? 10 : 16,
                                       ),
                                     ),
                                   ),
@@ -203,8 +206,8 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
-                          Color.fromARGB(255, 23, 163, 77),
-                          Color.fromARGB(255, 121, 160, 179),
+                          Color.fromARGB(255, 18, 19, 18),
+                          Color.fromARGB(255, 50, 53, 54),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -226,6 +229,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                   textStyle: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -236,6 +240,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                   textStyle: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 textAlign: TextAlign.center,
@@ -260,6 +265,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                         textStyle: TextStyle(
                                           fontSize: isLaptop ? 26 : 30,
                                           fontWeight: FontWeight.bold,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ),
@@ -272,6 +278,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                             textStyle: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
+                                              color: Colors.white,
                                             ),
                                           ),
                                         ),
@@ -281,6 +288,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                             textStyle: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
+                                              color: Colors.white,
                                             ),
                                           ),
                                         ),
@@ -290,6 +298,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                             textStyle: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
+                                              color: Colors.white,
                                             ),
                                           ),
                                         ),
@@ -321,7 +330,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                             textStyle: TextStyle(
                               fontSize: isMobile ? 22 : 36,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue[900],
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -362,7 +371,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                             textStyle: TextStyle(
                               fontSize: isMobile ? 22 : 36,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue[900],
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -409,13 +418,35 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    Text(
-                                      'Learn More',
-                                      style: GoogleFonts.readexPro(
-                                        textStyle: TextStyle(
-                                          fontSize: isMobile ? 12 : 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
+                                    OnHoverButton(
+                                      child: SizedBox(
+                                        width: isMobile ? 100 : 200,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'View Project',
+                                              style: GoogleFonts.readexPro(
+                                                textStyle: TextStyle(
+                                                  fontSize: isMobile ? 12 : 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: isMobile ? 4 : 8),
+                                            IconButton(
+                                              onPressed: () {
+                                                _launchURL(
+                                                  projectList[index].link,
+                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.arrow_forward,
+                                                color: Colors.white,
+                                                size: isMobile ? 14 : 18,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -434,6 +465,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                   // Skills - responsive layout; when hovered highlight one and dim others
                   Container(
                     key: _skillsKey,
+                    height: isMobile ? null : 800,
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(
                       horizontal: isMobile ? 16.0 : 40.0,
@@ -448,7 +480,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                             textStyle: TextStyle(
                               fontSize: isMobile ? 22 : 36,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue[900],
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -497,12 +529,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                   Colors.grey.shade300,
                                                 ]
                                               : const [
-                                                  Color.fromARGB(
-                                                    255,
-                                                    236,
-                                                    232,
-                                                    232,
-                                                  ),
+                                                  Color.fromARGB(255, 19, 4, 4),
                                                   Color.fromARGB(
                                                     255,
                                                     184,
@@ -544,7 +571,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                 ),
                                               ],
                                       ),
-                                      height: 180,
+                                      height: isMobile ? 160 : 360,
                                     ),
                                   );
                                 }),
@@ -568,7 +595,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                           duration: const Duration(
                                             milliseconds: 200,
                                           ),
-                                          height: isMobile ? 160 : 360,
+                                          height: isMobile ? 160 : 500,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(
                                               20.0,
@@ -593,21 +620,31 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                     ]
                                                   : anyHovered
                                                   ? [
-                                                      Colors.grey.shade200,
-                                                      Colors.grey.shade300,
+                                                      const Color.fromARGB(
+                                                        255,
+                                                        10,
+                                                        1,
+                                                        1,
+                                                      ),
+                                                      const Color.fromARGB(
+                                                        255,
+                                                        7,
+                                                        6,
+                                                        6,
+                                                      ),
                                                     ]
                                                   : const [
                                                       Color.fromARGB(
                                                         255,
-                                                        236,
-                                                        232,
-                                                        232,
+                                                        7,
+                                                        7,
+                                                        7,
                                                       ),
                                                       Color.fromARGB(
                                                         255,
-                                                        184,
-                                                        185,
-                                                        187,
+                                                        22,
+                                                        23,
+                                                        24,
                                                       ),
                                                     ],
                                             ),
@@ -617,9 +654,9 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                       color:
                                                           const Color.fromARGB(
                                                             255,
-                                                            136,
-                                                            6,
-                                                            148,
+                                                            11,
+                                                            1,
+                                                            12,
                                                           ).withOpacity(0.9),
                                                       spreadRadius: 5,
                                                       blurRadius: 12,
@@ -672,8 +709,13 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                       fontWeight:
                                                           FontWeight.w600,
                                                       color: isActive
-                                                          ? Colors.deepPurple
-                                                          : Colors.black87,
+                                                          ? const Color.fromARGB(
+                                                              255,
+                                                              4,
+                                                              2,
+                                                              7,
+                                                            )
+                                                          : Colors.white,
                                                     ),
                                                   ),
                                                 ),
@@ -685,79 +727,145 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                                     SizedBox(
                                                       height: isMobile ? 8 : 16,
                                                     ),
-                                                    ...skillsData[i].skills
-                                                        .map(
-                                                          (skill) => Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                  bottom:
-                                                                      isMobile
-                                                                      ? 4
-                                                                      : 8,
+                                                    ...skillsData[i].skills.map(
+                                                      (skill) => Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                              bottom: isMobile
+                                                                  ? 4
+                                                                  : 8,
+                                                            ),
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal:
+                                                                    isMobile
+                                                                    ? 8.0
+                                                                    : 20.0,
+                                                                vertical:
+                                                                    isMobile
+                                                                    ? 4.0
+                                                                    : 14.0,
+                                                              ),
+                                                          child: Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Image(
+                                                                image: AssetImage(
+                                                                  skill
+                                                                      .iconPath,
                                                                 ),
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
+                                                                width: isMobile
+                                                                    ? 14
+                                                                    : 30,
+                                                              ),
+                                                              // Icon(
+                                                              //   Icons
+                                                              //       .check_circle,
+                                                              //   color: isActive
+                                                              //       ? const Color.fromARGB(
+                                                              //           255,
+                                                              //           4,
+                                                              //           1,
+                                                              //           8,
+                                                              //         )
+                                                              //       : Colors
+                                                              //             .white,
+                                                              //   size: isMobile
+                                                              //       ? 14
+                                                              //       : 18,
+                                                              // ),
+                                                              SizedBox(
+                                                                width: isMobile
+                                                                    ? 6
+                                                                    : 12,
+                                                              ),
+                                                              Text(
+                                                                skill.name,
+                                                                style: GoogleFonts.aleo(
+                                                                  textStyle: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
                                                                         isMobile
-                                                                        ? 8.0
-                                                                        : 20.0,
-                                                                    vertical:
-                                                                        isMobile
-                                                                        ? 4.0
-                                                                        : 14.0,
-                                                                  ),
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .check_circle,
+                                                                        ? 12
+                                                                        : 16,
                                                                     color:
                                                                         isActive
                                                                         ? Colors
-                                                                              .deepPurple
+                                                                              .black54
                                                                         : Colors
-                                                                              .black54,
-                                                                    size:
-                                                                        isMobile
-                                                                        ? 14
-                                                                        : 18,
+                                                                              .white,
                                                                   ),
-                                                                  SizedBox(
-                                                                    width:
-                                                                        isMobile
-                                                                        ? 6
-                                                                        : 12,
-                                                                  ),
-                                                                  Text(
-                                                                    skill.name,
+                                                                ),
+                                                              ),
+                                                              Spacer(),
+                                                              CircleLoader(
+                                                                child: CircularPercentIndicator(
+                                                                  animationDuration:
+                                                                      500,
+                                                                  radius:
+                                                                      isMobile
+                                                                      ? 16.0
+                                                                      : 24.0,
+                                                                  lineWidth:
+                                                                      isMobile
+                                                                      ? 3.0
+                                                                      : 5.0,
+                                                                  percent:
+                                                                      skill
+                                                                          .proficiency /
+                                                                      100,
+                                                                  center: Text(
+                                                                    '${skill.proficiency.toInt()}%',
                                                                     style: GoogleFonts.aleo(
                                                                       textStyle: TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
                                                                         fontSize:
                                                                             isMobile
-                                                                            ? 12
-                                                                            : 16,
+                                                                            ? 10
+                                                                            : 14,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
                                                                         color:
                                                                             isActive
-                                                                            ? Colors.black87
-                                                                            : Colors.black54,
+                                                                            ? Colors.black54
+                                                                            : Colors.black,
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ],
+                                                                  progressColor:
+                                                                      isActive
+                                                                      ? const Color.fromARGB(
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0,
+                                                                        )
+                                                                      : Colors
+                                                                            .black,
+                                                                  backgroundColor:
+                                                                      isActive
+                                                                      ? const Color.fromARGB(
+                                                                          31,
+                                                                          0,
+                                                                          0,
+                                                                          0,
+                                                                        )
+                                                                      : Colors
+                                                                            .black26,
+                                                                ),
                                                               ),
-                                                            ),
+                                                            ],
                                                           ),
-                                                        )
-                                                        .toList(),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               ],

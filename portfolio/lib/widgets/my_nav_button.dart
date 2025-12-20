@@ -5,6 +5,7 @@ class MyNavButton extends StatefulWidget {
 
   final Widget child;
   final VoidCallback onPressed;
+  final bool isMobile = false;
 
   @override
   State<MyNavButton> createState() => _MyNavButtonState();
@@ -15,7 +16,8 @@ class _MyNavButtonState extends State<MyNavButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 40,
+      height: widget.isMobile ? 30 : 40,
+      width: widget.isMobile ? 80 : 100,
       child: TextButton(
         onPressed: widget.onPressed,
         onHover: (hovering) {
