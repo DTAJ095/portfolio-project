@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -11,16 +14,16 @@ import 'package:portfolio/widgets/on_hover_button.dart';
 import 'package:portfolio/widgets/on_hover_container.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PortfolioHomePage extends StatefulWidget {
+class PortfolioHomePage extends ConsumerStatefulWidget {
   const PortfolioHomePage({super.key});
 
   get onPressed => null;
 
   @override
-  State<PortfolioHomePage> createState() => _PortfolioHomePageState();
+  ConsumerState<PortfolioHomePage> createState() => _PortfolioHomePageState();
 }
 
-class _PortfolioHomePageState extends State<PortfolioHomePage> {
+class _PortfolioHomePageState extends ConsumerState<PortfolioHomePage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _aboutKey = GlobalKey();
   final GlobalKey _projectsKey = GlobalKey();
@@ -69,6 +72,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final projects = ref.watch(projectsProvider);
     return LayoutBuilder(
       builder: (context, constraints) {
         final double screenWidth = constraints.maxWidth;
@@ -380,7 +384,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                         GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: projectList.length,
+                          itemCount: projects.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: projectsColumns,
@@ -396,7 +400,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      projectList[index].title,
+                                      projects[index].title,
                                       style: GoogleFonts.readexPro(
                                         textStyle: TextStyle(
                                           fontSize: isMobile ? 16 : 24,
@@ -408,7 +412,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                     const SizedBox(height: 8),
                                     Expanded(
                                       child: Text(
-                                        projectList[index].description,
+                                        projects[index].description,
                                         style: GoogleFonts.aleo(
                                           textStyle: TextStyle(
                                             fontSize: isMobile ? 12 : 16,
@@ -438,7 +442,7 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                             IconButton(
                                               onPressed: () {
                                                 _launchURL(
-                                                  projectList[index].link,
+                                                  projects[index].link,
                                                 );
                                               },
                                               icon: Icon(
@@ -1142,6 +1146,124 @@ class _PortfolioHomePageState extends State<PortfolioHomePage> {
                                               ),
                                             ),
                                           ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: isMobile ? 10.0 : 20.0,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              // Add work experience details here
+                                              ...workExperienceData.map(
+                                                (work) => Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: isMobile
+                                                        ? 4.0
+                                                        : 10.0,
+                                                    horizontal: isMobile
+                                                        ? 8.0
+                                                        : 20.0,
+                                                  ),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            work.icon,
+                                                            color: Colors.white,
+                                                            size: isMobile
+                                                                ? 14
+                                                                : 24,
+                                                          ),
+                                                          SizedBox(
+                                                            width: isMobile
+                                                                ? 6
+                                                                : 12,
+                                                          ),
+                                                          Text(
+                                                            work.position,
+                                                            style: GoogleFonts.aleo(
+                                                              textStyle: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize:
+                                                                    isMobile
+                                                                    ? 12
+                                                                    : 16,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.symmetric(
+                                                              horizontal:
+                                                                  isMobile
+                                                                  ? 20.0
+                                                                  : 40.0,
+                                                              vertical: isMobile
+                                                                  ? 4.0
+                                                                  : 8.0,
+                                                            ),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              work.company,
+                                                              style: GoogleFonts.aleo(
+                                                                textStyle: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  fontSize:
+                                                                      isMobile
+                                                                      ? 10
+                                                                      : 14,
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              work.duration,
+                                                              style: GoogleFonts.aleo(
+                                                                textStyle: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  fontSize:
+                                                                      isMobile
+                                                                      ? 10
+                                                                      : 14,
+                                                                  color: Colors
+                                                                      .white70,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: isMobile
+                                                            ? 6
+                                                            : 12,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         // Add work experience details here
                                       ],

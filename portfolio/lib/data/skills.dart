@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class Skill {
   final String name;
   final String iconPath;
@@ -111,3 +113,7 @@ final List<SkillsList> skillsData = [
     ],
   ),
 ];
+
+final skillsProvider = Provider<List<SkillsList>>((ref) {
+  return skillsData;
+});

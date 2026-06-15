@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:portfolio/pages/home_page.dart';
 
 void main() {
-  runApp(const PortfolioApp());
+  runApp(const ProviderScope(child: PortfolioApp()));
 }
 
 class PortfolioApp extends StatelessWidget {

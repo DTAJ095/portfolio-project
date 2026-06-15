@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class Projects {
   final String title;
   final String description;
@@ -22,11 +24,6 @@ final List<Projects> projectList = [
     link: 'www.example.com',
   ),
   Projects(
-    title: 'Chat Application',
-    description: 'A real-time chat application using Firebase.',
-    link: 'www.example.com',
-  ),
-  Projects(
     title: 'Personal Finance Tracker',
     description: 'Your personal finance management app.',
     link: 'www.example.com',
@@ -42,3 +39,7 @@ final List<Projects> projectList = [
     link: 'www.example.com',
   ),
 ];
+
+final projectsProvider = Provider<List<Projects>>((ref) {
+  return projectList;
+});

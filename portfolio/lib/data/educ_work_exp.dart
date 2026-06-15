@@ -79,21 +79,21 @@ class WorkExperience {
 
 final List<WorkExperience> workExperienceData = [
   WorkExperience(
-    icon: FontAwesomeIcons.briefcase,
+    icon: FontAwesomeIcons.squareFontAwesome,
     position: 'Software Engineer',
     company: 'Tech Solutions Inc.',
     duration: 'June 2022 - Present',
   ),
   WorkExperience(
-    icon: FontAwesomeIcons.briefcase,
+    icon: FontAwesomeIcons.squareFontAwesome,
     position: 'Junior Developer',
     company: 'Innovatech Ltd.',
     duration: 'January 2021 - May 2022',
   ),
   WorkExperience(
-    icon: FontAwesomeIcons.briefcase,
+    icon: FontAwesomeIcons.squareFontAwesome,
     position: 'IT Assistant',
-    company: 'Some Company',
-    duration: 'Some Duration',
+    company: 'SAASA B2E/RAYNO SYSTEMS',
+    duration: '03 December 2025 - Till present',
   ),
 ];
